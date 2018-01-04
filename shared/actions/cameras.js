@@ -1,3 +1,5 @@
+import api from '../apiSingleton';
+
 export const ADD_CAMERA_REQUEST = 'ADD_CAMERA_REQUEST';
 export const ADD_CAMERA_SUCCESS = 'ADD_CAMERA_SUCCESS';
 export const ADD_CAMERA_FAIL = 'ADD_CAMERA_FAIL';
@@ -7,10 +9,35 @@ export function addCamera({ params = {} }) {
         dispatch({
             type : ADD_CAMERA_REQUEST
         });
-        // TODO(JiaKuan Su): Integrate with API.
-        dispatch({
-            type   : ADD_CAMERA_SUCCESS,
-            camera : params
+
+        return api.analyzers.create({
+            name: params.name,
+            // TODO(JiaKuan Su): Customize type.
+            type: 'tripwire',
+            enable: true,
+            source: {
+                mode: 'stream',
+                url: params.url
+            },
+            // TODO(JiaKuan Su): Customize pipelines.
+            pipelines: [ {
+                name: 'tripwire',
+                params: {
+                    region: [],
+                    triggers: params.triggers
+                }
+            } ]
+        }).then(({ id }) => {
+            return api.cameras.start(id);
+        }).then(() => {
+            dispatch({
+                type   : ADD_CAMERA_SUCCESS,
+                camera : params
+            });
+        }).catch(() => {
+            dispatch({
+                type : ADD_CAMERA_FAIL
+            });
         });
     };
 }

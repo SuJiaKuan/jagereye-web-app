@@ -14,22 +14,22 @@ export default class AnalyzersAPI extends Base {
     }
 
     show(id) {
-        return this.apiClient.get('analyzer/${id}', {}, {});
+        return this.apiClient.get(`analyzer/${id}`, {}, {});
     }
 
     remove(id) {
-        return this.apiClient.delete('analyzer/${id}', {}, {});
+        return this.apiClient.delete(`analyzer/${id}`, {}, {});
     }
 
     showStatus(id) {
-        return this.apiClient.get('analyzer/${id}/runtime', {}, {});
+        return this.apiClient.get(`analyzer/${id}/runtime`, {}, {});
     }
 
     start(id) {
-        return this.apiClient.post('analyzer/${id}/runtime', {}, {});
+        return this.apiClient.post(`analyzer/${id}/runtime`, {}, {});
     }
 
     stop(id) {
-        return this.apiClient.delete('analyzer/${id}/runtime', {}, {});
+        return this.apiClient.delete(`analyzer/${id}/runtime`, {}, {});
     }
 }
