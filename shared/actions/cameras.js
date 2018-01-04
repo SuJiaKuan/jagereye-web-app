@@ -23,7 +23,7 @@ export function addCamera({ params = {} }) {
             pipelines: [ {
                 name: 'tripwire',
                 params: {
-                    region: [],
+                    region: params.region,
                     triggers: params.triggers
                 }
             } ]
