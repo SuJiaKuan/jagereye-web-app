@@ -2,6 +2,7 @@ import ApiClient            from './ApiClient';
 import ActivationsAPI       from './Activations';
 import AccountsAPI          from './Accounts';
 import AssessmentSystemsAPI from './AssessmentSystems';
+import AnalyzersAPI         from './Analyzers'
 
 export default function ({ apiPrefix } = {}) {
     if (!apiPrefix) {
@@ -13,7 +14,8 @@ export default function ({ apiPrefix } = {}) {
     return {
         apiClient         : api,
         activations       : new ActivationsAPI({ apiClient: api }),
-        accounts             : new AccountsAPI({ apiClient: api }),
-        assessmentSystems : new AssessmentSystemsAPI({ apiClient: api })
+        accounts          : new AccountsAPI({ apiClient: api }),
+        assessmentSystems : new AssessmentSystemsAPI({ apiClient: api }),
+        analyzers         : new AanlyzersAPI({ apiClient: api })
     };
 }
