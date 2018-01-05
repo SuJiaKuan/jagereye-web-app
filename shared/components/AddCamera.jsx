@@ -238,9 +238,11 @@ export default class AddCamera extends Component {
             );
         } else if (step === FORM_STEP.CONFIG) {
             const triggerCheckBoxes = map(TRIGGERS, (trigger, idx) => (
-                <Cell col = {4}>
+                <Cell
+                    key = {trigger}
+                    col = {4}
+                >
                     <Checkbox
-                        key      = {trigger}
                         label    = {l(trigger)}
                         checked  = {triggersChecked[idx]}
                         onChange = {this.handleTriggersChange.bind(this, idx)}
