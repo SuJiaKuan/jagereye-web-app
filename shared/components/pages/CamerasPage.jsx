@@ -37,15 +37,42 @@ export default class CamerasPage extends Component {
         this.props.onStopAdding();
     }
 
+    reorderRegion(region) {
+        return [ {
+            x: Math.min(region[0].x, region[1].x),
+            y: Math.min(region[0].y, region[1].y)
+        }, {
+            x: Math.max(region[0].x, region[1].x),
+            y: Math.max(region[0].y, region[1].y)
+        } ];
+    }
+
     renderCameraView(camera) {
+        const region = this.reorderRegion(camera.region);
+        const regionX = region[0].x;
+        const regionY = region[0].y;
+        const regionWidth = region[1].x - region[0].x;
+        const regionHeight = region[1].y - region[0].y;
+        const regionStyle = {
+            'position': 'absolute',
+            'width': regionWidth,
+            'height': regionHeight,
+            'left': regionX,
+            'top': regionY,
+            'background-color': 'rgba(55,84,148, 0.5)'
+        };
+
         return (
             <div>
                 <h3>{camera.name}</h3>
-                <img
-                    src    = {camera.url}
-                    width  = '960'
-                    height = '540'
-                />
+                <div style = {{ position: 'relative' }}>
+                    <div style = {regionStyle} />
+                    <img
+                        src    = {camera.url}
+                        width  = '960'
+                        height = '540'
+                    />
+                </div>
             </div>
         );
     }
