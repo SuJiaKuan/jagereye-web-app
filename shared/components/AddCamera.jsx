@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Checkbox, Textfield, Grid, Cell } from 'react-mdl';
 import clone from 'lodash/clone';
 import fill from 'lodash/fill';
 import filter from 'lodash/filter';
@@ -202,33 +203,34 @@ export default class AddCamera extends Component {
     renderForm = () => {
         const { l } = this.context.i18n;
 
-        const { name, url, triggersChecked, step } = this.state;
+        const {
+            name,
+            url,
+            triggersChecked,
+            step,
+            isDrawing
+        } = this.state;
 
         if (step === FORM_STEP.NEW) {
             return (
                 <form>
-                    <label>
-                        {l('Name')}
-                        <input
-                            type     = 'text'
-                            value    = {name}
-                            onChange = {this.handleNameChange}
-                        />
-                    </label>
+                    <Textfield
+                        label    = {l('Name')}
+                        value    = {name}
+                        onChange = {this.handleNameChange}
+                    />
                     <br />
-                    <label>
-                        {l('URL')}
-                        <input
-                            type     = 'text'
-                            value    = {url}
-                            onChange = {this.handleUrlChange}
-                        />
-                    </label>
+                    <Textfield
+                        label    = {l('URL')}
+                        value    = {url}
+                        onChange = {this.handleUrlChange}
+                    />
                     <br />
                     <Button
                         colored
                         ripple
                         onClick = {this.handleNextBtnClick}
+                        style   = {{ float: 'right' }}
                     >
                         {l('Next')}
                     </Button>
@@ -236,15 +238,14 @@ export default class AddCamera extends Component {
             );
         } else if (step === FORM_STEP.CONFIG) {
             const triggerCheckBoxes = map(TRIGGERS, (trigger, idx) => (
-                <label key = {trigger}>
-                    {trigger}
-                    <input
-                        name     = {l(trigger)}
-                        type     = 'checkbox'
-                        checked    = {triggersChecked[idx]}
+                <Cell col = {4}>
+                    <Checkbox
+                        key      = {trigger}
+                        label    = {l(trigger)}
+                        checked  = {triggersChecked[idx]}
                         onChange = {this.handleTriggersChange.bind(this, idx)}
                     />
-                </label>
+                </Cell>
             ));
 
             return (
@@ -253,19 +254,21 @@ export default class AddCamera extends Component {
                         ref         = {canvas => this.canvas = canvas}
                         width       = '960'
                         height      = '540'
+                        style       = {{ cursor: isDrawing ? 'nwse-resize' : 'crosshair' }}
                         onMouseDown = {this.handleCanvasMouseDown}
                         onMouseMove = {this.handleCanvasMouseMove}
                         onMouseUp   = {this.handleCanvasMouseUp}
                     />
                     <br />
-                    <label>{l('Triggers:')}</label>
-                    <br />
-                    {triggerCheckBoxes}
+                    <Grid>
+                        {triggerCheckBoxes}
+                    </Grid>
                     <br />
                     <Button
                         colored
                         ripple
                         onClick = {this.handlePreviousBtnClick}
+                        style   = {{ float: 'left' }}
                     >
                         {l('Previous')}
                     </Button>
@@ -273,6 +276,7 @@ export default class AddCamera extends Component {
                         colored
                         ripple
                         onClick = {this.handleFinishBtnClick}
+                        style   = {{ float: 'right' }}
                     >
                         {l('Finish')}
                     </Button>
