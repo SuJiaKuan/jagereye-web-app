@@ -29,7 +29,7 @@ function render404HTML({ componentHTML, config }) {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="shortcut icon" href="/static/favicon.ico"/>
-            <title>Quiz Wall - itsquiz.com</title>
+            <title>JagerEye</title>
             <meta name="description" content="404 Page not found">
             <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">

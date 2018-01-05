@@ -96,7 +96,7 @@ export function getMetaDataFromState({ route, state, params = {}, query = {}, la
 
     return {
         type        : 'MAIN',
-        title       : 'Quiz Wall',
+        title       : 'JagerEye',
         siteName    : 'It\'s quiz',
         image       : 'http://app.itsquiz.com/be/static/images/logo.png',
         description : 'Discover tons of different vacancies, tests, quizzes, questionnaires and more...'
