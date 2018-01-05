@@ -1,5 +1,5 @@
 {
-    "apiPrefix": "http://localhost:5000",
+    "apiPrefix": "http://localhost:5000/api/v1",
     "backgroundImagesPrefix": "http://app.itsquiz.com/be/static/images/backgrounds/",
     "staticUrl": "http://localhost:8050",
     "landingURL": "https://itsquiz.com/",

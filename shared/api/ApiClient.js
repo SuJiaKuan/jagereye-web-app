@@ -76,7 +76,8 @@ export default class ApiClient {
 
             return res.json();
         }).then(data => {
-            if (data && data.status === 1) {
+            // TODO(JiaKuan Su): More error handling.)
+            if (data) {
                 return data;
             }
 
