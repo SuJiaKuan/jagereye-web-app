@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import { Header, Navigation } from 'react-mdl';
 
-// import WelcomeDialog from '../../containers/WelcomeDialog.jsx';
-import Footer        from '../../containers/Footer.jsx';
+import Footer from '../../containers/Footer.jsx';
 
 import './MainLayout.less';
 
@@ -15,16 +15,18 @@ export default class MainLayout extends Component {
     };
 
     render() {
-        // const { showWelcomeScreen, showFooter, children, onWelcomeScreenDismiss } = this.props;
         const { showFooter, children } = this.props;
 
+        const title = <span style = {{ 'letter-spacing': '3px' }}>JagerEye</span>;
+
         return (
-            <div className='MainLayout'>
-                <div className='MainLayout__content'>
-                    {/* <WelcomeDialog
-                        isOpen={showWelcomeScreen}
-                        onDismiss={onWelcomeScreenDismiss}
-                    />*/}
+            <div className = 'MainLayout'>
+                <Header title={title}>
+                    <Navigation>
+                        <a href = '/cameras'>Cameras</a>
+                    </Navigation>
+                </Header>
+                <div className = 'MainLayout__content'>
                     {children}
                 </div>
 

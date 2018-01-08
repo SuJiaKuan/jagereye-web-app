@@ -108,7 +108,6 @@ export default class CamerasPage extends Component {
                 <Loading show = {isLoading} />
 
                 <div className = 'CamerasPage__content'>
-                    <h5 className = 'CamerasPage__logo'>JagerEye</h5>
                     {(() => {
                         if (isAdding) {
                             return <AddCamera addNewCamera = {addNewCamera} />;
