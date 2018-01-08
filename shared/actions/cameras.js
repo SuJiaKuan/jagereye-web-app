@@ -1,7 +1,5 @@
 import api from '../apiSingleton';
 
-console.log(api);
-
 export const ADD_CAMERA_REQUEST = 'ADD_CAMERA_REQUEST';
 export const ADD_CAMERA_SUCCESS = 'ADD_CAMERA_SUCCESS';
 export const ADD_CAMERA_FAIL = 'ADD_CAMERA_FAIL';
