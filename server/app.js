@@ -70,7 +70,7 @@ app.use((req, res) => {
 
     match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
         if (req.url === '/') {
-            return res.redirect(302, '/cameras');
+            return res.redirect(302, '/dashboard');
         }
         if (redirectLocation) {
             return res.redirect(301, redirectLocation.pathname + redirectLocation.search);

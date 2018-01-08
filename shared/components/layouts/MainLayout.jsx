@@ -14,7 +14,11 @@ export default class MainLayout extends Component {
         onWelcomeScreenDismiss : PropTypes.func
     };
 
+    static contextTypes = { i18n: React.PropTypes.object };
+
     render() {
+        const { l } = this.context.i18n;
+
         const { showFooter, children } = this.props;
 
         const title = <span style = {{ 'letter-spacing': '3px' }}>JagerEye</span>;
@@ -23,7 +27,8 @@ export default class MainLayout extends Component {
             <div className = 'MainLayout'>
                 <Header title={title}>
                     <Navigation>
-                        <a href = '/cameras'>Cameras</a>
+                        <a href = '/dashboard'>{l('Dashboard')}</a>
+                        <a href = '/cameras'>{l('Cameras')}</a>
                     </Navigation>
                 </Header>
                 <div className = 'MainLayout__content'>
