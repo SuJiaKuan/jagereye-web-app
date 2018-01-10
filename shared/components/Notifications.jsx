@@ -26,8 +26,11 @@ export default class CamerasPage extends Component {
             isChecked,
             onBtnClick
         } = this.props;
-        const count = notificationList.length;
+        const count = notificationList.length > 99 ? 99 : notificationList.length;
 
+        const countStyle = {
+            'opacity': isChecked ? '0' : '1'
+        };
         // XXX(JiaKuan Su): I register "onMouseDown" instead "onClick" because
         // "onClick" is registered by Menu.
         const btn = (
@@ -36,7 +39,12 @@ export default class CamerasPage extends Component {
                 onMouseDown   = {onBtnClick}
             >
                 <IconButton name = 'notifications' />
-                { !isChecked && <div className = 'Notifcations__count'>{count}</div> }
+                <div
+                    className = 'Notifcations__count'
+                    style = {countStyle}
+                >
+                    {count}
+                </div>
             </div>
         );
         const headerText = count > 0 ? l('Recent Events') : l('No Recent Events');
