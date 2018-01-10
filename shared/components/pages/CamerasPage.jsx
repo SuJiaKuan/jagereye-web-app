@@ -59,7 +59,7 @@ export default class CamerasPage extends Component {
             'height': regionHeight,
             'left': regionX,
             'top': regionY,
-            'background-color': 'rgba(55,84,148, 0.5)'
+            'backgroundColor': 'rgba(55,84,148, 0.5)'
         };
 
         return (
