@@ -1,0 +1,54 @@
+.Notifcations__btn {
+    position: relative;
+    cursor: pointer;
+
+    .Notifcations__count {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        height: 14px;
+        padding: 1px 3px;
+        background-color: #F44542;
+        color: #FFF;
+        border-radius: 2px;
+        font-size: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.mdl-portalmenu__list {
+    :first-child {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: default;
+        &:hover {
+            background-color: #FFF;
+        }
+    }
+
+    .Notifcations__item  {
+        display: flex;
+        cursor: inherit;
+        text-decoration: none;
+        color: inherit;
+        font-weight: inherit;
+        font-size: 12px;
+        &:hover {
+            background-color: #EEE;
+        }
+
+        > * {
+            margin: 3px;
+        }
+
+        flex-direction: row;
+
+        .Notifcations__item__preview {
+            width: 80px;
+            height: 45px;
+        }
+    }
+}

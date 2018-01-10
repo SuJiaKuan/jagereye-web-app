@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Header, Navigation } from 'react-mdl';
 
-import Footer from '../../containers/Footer.jsx';
+import Notifcations from '../../containers/Notifications.jsx';
+import Footer       from '../../containers/Footer.jsx';
 
 import './MainLayout.less';
 
@@ -29,6 +30,7 @@ export default class MainLayout extends Component {
                     <Navigation>
                         <a href = '/dashboard'>{l('Dashboard')}</a>
                         <a href = '/cameras'>{l('Cameras')}</a>
+                        <Notifcations />
                     </Navigation>
                 </Header>
                 <div className = 'MainLayout__content'>
