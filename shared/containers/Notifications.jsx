@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { connect }                     from 'react-redux';
 
 import { checkNotifications } from '../actions/notifications';
-import connectDataFetchers from '../lib/connectDataFetchers.jsx';
 
 import Notifcations from '../components/Notifications.jsx';
 
@@ -36,6 +35,4 @@ function mapStateToProps({ notifications }) {
     };
 }
 
-export default connect(mapStateToProps)(
-    connectDataFetchers(NotificationsContainer, [])
-);
+export default connect(mapStateToProps)(NotificationsContainer);
