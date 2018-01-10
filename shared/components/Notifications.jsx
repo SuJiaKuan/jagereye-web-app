@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link }                        from 'react-router';
 import { IconButton }                  from 'react-mdl';
 import { Menu, MenuItem }              from 'react-mdl-extra';
 import map                             from 'lodash/map';
@@ -51,7 +52,10 @@ export default class CamerasPage extends Component {
 
             return (
                 <MenuItem key = {idx}>
-                    <a className = 'Notifcations__item' href = '/dashboard'>
+                    <Link
+                        className = 'Notifcations__item'
+                        to         = '/dashboard'
+                    >
                         <div
                             className = 'Notifcations__item__preview'
                             style     = {previewStyle}
@@ -59,7 +63,7 @@ export default class CamerasPage extends Component {
                         <div>
                             {`From ${name} at ${readableTime(timestamp)}`}
                         </div>
-                    </a>
+                    </Link>
                 </MenuItem>
             );
         });
