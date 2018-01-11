@@ -1,18 +1,29 @@
 import React, { Component, PropTypes } from 'react';
 import { connect }                     from 'react-redux';
 
-import { addCamera, addingCameraEnter, addingCameraLeave } from '../../actions/cameras';
+import {
+    changeCameraView,
+    addingCameraEnter,
+    addingCameraLeave,
+    addCamera,
+    deleteCamera
+} from '../../actions/cameras';
 import connectDataFetchers from '../../lib/connectDataFetchers.jsx';
 
 import CamerasPage from '../../components/pages/CamerasPage.jsx';
 
 class CamerasPageContainer extends Component {
     static propTypes = {
-        isAdding   : PropTypes.bool,
-        isLoading  : PropTypes.bool,
-        cameraList : PropTypes.arrayOf(PropTypes.object),
-        dispatch   : PropTypes.func
+        isAdding: PropTypes.bool,
+        isLoading: PropTypes.bool,
+        curCameraIdx: PropTypes.number,
+        cameraList: PropTypes.arrayOf(PropTypes.object),
+        dispatch: PropTypes.func
     };
+
+    handleCameraViewChange = (idx) => {
+        this.props.dispatch(changeCameraView(idx));
+    }
 
     handleAddingCameraEnter = () => {
         this.props.dispatch(addingCameraEnter());
@@ -26,12 +37,18 @@ class CamerasPageContainer extends Component {
         this.props.dispatch(addCamera({ params }));
     }
 
+    deleteCamera = (id) => {
+        this.props.dispatch(deleteCamera(id));
+    }
+
     render() {
         return (
             <CamerasPage
                 {...this.props}
                 addNewCamera = {this.addNewCamera}
-                onAdding     = {this.handleAddingCameraEnter}
+                deleteCamera = {this.deleteCamera}
+                onCameraViewChange = {this.handleCameraViewChange}
+                onAdding = {this.handleAddingCameraEnter}
                 onStopAdding = {this.handleAddingCameraLeave}
             />
         );
@@ -39,11 +56,17 @@ class CamerasPageContainer extends Component {
 }
 
 function mapStateToProps({ cameras }) {
-    const { isAdding, isLoading, cameraList } = cameras;
+    const {
+        isAdding,
+        isLoading,
+        curCameraIdx,
+        cameraList
+    } = cameras;
 
     return {
         isAdding,
         isLoading,
+        curCameraIdx,
         cameraList
     };
 }

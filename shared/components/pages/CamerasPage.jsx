@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 
-import { Button } from 'react-mdl';
+import { Button, IconButton } from 'react-mdl';
 
 import AddCamera from '../AddCamera.jsx';
-import Loading from '../Loading.jsx';
+import Loading   from '../Loading.jsx';
 
 import './CamerasPage.less';
 
@@ -14,27 +14,33 @@ const SHOWN_CONTENT = {
 
 export default class CamerasPage extends Component {
     static propTypes = {
-        isAdding   : PropTypes.bool,
-        isLoading    : PropTypes.bool,
-        cameraList   : PropTypes.arrayOf(PropTypes.object),
-        onAdding     : PropTypes.func,
-        onStopAdding : PropTypes.func,
-        addNewCamera : PropTypes.func
+        isAdding: PropTypes.bool,
+        isLoading: PropTypes.bool,
+        curCameraIdx: PropTypes.number,
+        cameraList: PropTypes.arrayOf(PropTypes.object),
+        onCameraViewChange: PropTypes.func,
+        onAdding: PropTypes.func,
+        onStopAdding: PropTypes.func,
+        addNewCamera: PropTypes.func,
+        deleteCamera: PropTypes.func
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
 
     state = {
-        shownContent : SHOWN_CONTENT.VIEW,
-        curCameraIdx : 0
+        shownContent : SHOWN_CONTENT.VIEW
     };
+
+    handleDeleteBtnClick = (id) => {
+        this.props.deleteCamera(id);
+    }
 
     handleCameraItemClick = (idx) => {
         this.setState({
-            shownContent: SHOWN_CONTENT.VIEW,
-            curCameraIdx: idx
+            shownContent: SHOWN_CONTENT.VIEW
         });
         this.props.onStopAdding();
+        this.props.onCameraViewChange(idx);
     }
 
     reorderRegion(region) {
@@ -64,7 +70,13 @@ export default class CamerasPage extends Component {
 
         return (
             <div>
-                <h3>{camera.name}</h3>
+                <div className = 'CamerasPage__view__title'>
+                    <h3>{camera.name}</h3>
+                    <IconButton
+                        name = 'delete'
+                        onClick = {this.handleDeleteBtnClick.bind(this, camera.id)}
+                    />
+                </div>
                 <div style = {{ position: 'relative' }}>
                     <div style = {regionStyle} />
                     <img
@@ -96,12 +108,11 @@ export default class CamerasPage extends Component {
         const {
             isAdding,
             isLoading,
+            curCameraIdx,
             cameraList,
             onAdding,
             addNewCamera
         } = this.props;
-
-        const { curCameraIdx } = this.state;
 
         return (
             <div className = 'CamerasPage'>
