@@ -9,6 +9,7 @@ class DashboardPageContainer extends Component {
     static propTypes = {
         isLoading    : PropTypes.bool,
         tripwireList : PropTypes.arrayOf(PropTypes.object),
+        cameraList : PropTypes.arrayOf(PropTypes.object),
         dispatch     : PropTypes.func
     };
 
@@ -19,12 +20,14 @@ class DashboardPageContainer extends Component {
     }
 }
 
-function mapStateToProps({ events }) {
+function mapStateToProps({ events, cameras }) {
     const { isLoading, tripwireEvents } = events;
+    const { cameraList } = cameras;
 
     return {
         isLoading,
-        tripwireEvents
+        tripwireEvents,
+        cameraList
     };
 }
 export default connect(mapStateToProps)(
