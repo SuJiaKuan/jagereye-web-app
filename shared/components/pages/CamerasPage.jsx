@@ -43,31 +43,7 @@ export default class CamerasPage extends Component {
         this.props.onCameraViewChange(idx);
     }
 
-    reorderRegion(region) {
-        return [ {
-            x: Math.min(region[0].x, region[1].x),
-            y: Math.min(region[0].y, region[1].y)
-        }, {
-            x: Math.max(region[0].x, region[1].x),
-            y: Math.max(region[0].y, region[1].y)
-        } ];
-    }
-
     renderCameraView(camera) {
-        const region = this.reorderRegion(camera.pipelines[0].params.region);
-        const regionX = region[0].x;
-        const regionY = region[0].y;
-        const regionWidth = region[1].x - region[0].x;
-        const regionHeight = region[1].y - region[0].y;
-        const regionStyle = {
-            'position': 'absolute',
-            'width': regionWidth,
-            'height': regionHeight,
-            'left': regionX,
-            'top': regionY,
-            'backgroundColor': 'rgba(55,84,148, 0.5)'
-        };
-
         return (
             <div>
                 <div className = 'CamerasPage__view__title'>
@@ -77,14 +53,11 @@ export default class CamerasPage extends Component {
                         onClick = {this.handleDeleteBtnClick.bind(this, camera._id)}
                     />
                 </div>
-                <div style = {{ position: 'relative' }}>
-                    <div style = {regionStyle} />
-                    <img
-                        src    = {camera.source.url}
-                        width  = '960'
-                        height = '540'
-                    />
-                </div>
+                <img
+                    src    = {camera.source.url}
+                    width  = '960'
+                    height = '540'
+                />
             </div>
         );
     }
