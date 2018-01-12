@@ -39,7 +39,7 @@ export function addCamera({ params = {} }) {
             name: params.name,
             // TODO(JiaKuan Su): Customize type.
             type: 'tripwire',
-            enabled: false,
+            enabled: true,
             source: {
                 mode: 'stream',
                 url: params.url
