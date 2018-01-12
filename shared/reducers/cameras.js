@@ -5,6 +5,9 @@ import {
     CHANGE_CAMERA_VIEW,
     ADDING_CAMERA_ENTER,
     ADDING_CAMERA_LEAVE,
+    LOAD_CAMERAS_REQUEST,
+    LOAD_CAMERAS_SUCCESS,
+    LOAD_CAMERAS_FAIL,
     ADD_CAMERA_REQUEST,
     ADD_CAMERA_SUCCESS,
     ADD_CAMERA_FAIL,
@@ -40,6 +43,28 @@ export default function cameras(state = DEFAULT_STATE, action) {
             return {
                 ...state,
                 isAdding: false
+            };
+        }
+
+        case LOAD_CAMERAS_REQUEST: {
+            return {
+                ...state,
+                isLoading: true
+            };
+        }
+
+        case LOAD_CAMERAS_SUCCESS: {
+            return {
+                ...state,
+                isLoading: false,
+                cameraList: action.cameraList
+            };
+        }
+
+        case LOAD_CAMERAS_FAIL: {
+            return {
+                ...state,
+                isLoading: false
             };
         }
 

@@ -5,6 +5,7 @@ import {
     changeCameraView,
     addingCameraEnter,
     addingCameraLeave,
+    loadCameras,
     addCamera,
     deleteCamera
 } from '../../actions/cameras';
@@ -71,5 +72,5 @@ function mapStateToProps({ cameras }) {
     };
 }
 export default connect(mapStateToProps)(
-    connectDataFetchers(CamerasPageContainer, [])
+    connectDataFetchers(CamerasPageContainer, [ loadCameras ])
 );

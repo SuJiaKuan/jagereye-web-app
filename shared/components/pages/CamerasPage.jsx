@@ -54,7 +54,7 @@ export default class CamerasPage extends Component {
     }
 
     renderCameraView(camera) {
-        const region = this.reorderRegion(camera.region);
+        const region = this.reorderRegion(camera.pipelines[0].params.region);
         const regionX = region[0].x;
         const regionY = region[0].y;
         const regionWidth = region[1].x - region[0].x;
@@ -74,13 +74,13 @@ export default class CamerasPage extends Component {
                     <h3>{camera.name}</h3>
                     <IconButton
                         name = 'delete'
-                        onClick = {this.handleDeleteBtnClick.bind(this, camera.id)}
+                        onClick = {this.handleDeleteBtnClick.bind(this, camera._id)}
                     />
                 </div>
                 <div style = {{ position: 'relative' }}>
                     <div style = {regionStyle} />
                     <img
-                        src    = {camera.url}
+                        src    = {camera.source.url}
                         width  = '960'
                         height = '540'
                     />

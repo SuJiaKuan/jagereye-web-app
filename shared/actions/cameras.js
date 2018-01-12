@@ -1,4 +1,29 @@
+import merge from 'lodash/merge';
+
 import api from '../apiSingleton';
+
+export const LOAD_CAMERAS_REQUEST = 'LOAD_CAMERAS_REQUEST';
+export const LOAD_CAMERAS_SUCCESS = 'LOAD_CAMERAS_SUCCESS';
+export const LOAD_CAMERAS_FAIL = 'LOAD_CAMERAS_FAIL';
+
+export function loadCameras() {
+    return dispatch => {
+        dispatch({
+            type : LOAD_CAMERAS_REQUEST
+        });
+
+        return api.analyzers.list().then((result) => {
+            dispatch({
+                type : LOAD_CAMERAS_SUCCESS,
+                cameraList: result
+            });
+        }).catch(() => {
+            dispatch({
+                type : LOAD_CAMERAS_FAIL
+            });
+        });
+    };
+}
 
 export const ADD_CAMERA_REQUEST = 'ADD_CAMERA_REQUEST';
 export const ADD_CAMERA_SUCCESS = 'ADD_CAMERA_SUCCESS';
@@ -10,13 +35,11 @@ export function addCamera({ params = {} }) {
             type : ADD_CAMERA_REQUEST
         });
 
-        let cameraId;
-
-        return api.analyzers.create({
+        let camera = {
             name: params.name,
             // TODO(JiaKuan Su): Customize type.
             type: 'tripwire',
-            enabled: true,
+            enabled: false,
             source: {
                 mode: 'stream',
                 url: params.url
@@ -29,17 +52,16 @@ export function addCamera({ params = {} }) {
                     triggers: params.triggers
                 }
             } ]
-        }).then(({ id }) => {
-            cameraId = id;
+        };
+
+        return api.analyzers.create(camera).then(({ id }) => {
+            camera = merge({}, { _id: id }, camera);
 
             return api.analyzers.start(id);
         }).then(() => {
             dispatch({
                 type   : ADD_CAMERA_SUCCESS,
-                camera : {
-                    ...params,
-                    id: cameraId
-                }
+                camera
             });
         }).catch(() => {
             dispatch({
