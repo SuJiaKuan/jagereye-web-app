@@ -1,3 +1,7 @@
-export default function readableTime(timestamp) {
-    return new Date(timestamp * 1000);
+import moment from 'moment';
+
+export default function readableTime(timestamp, fromNow = true) {
+    const unixTime = moment.unix(timestamp);
+
+    return fromNow ?  unixTime.fromNow() : unixTime.calendar();
 }

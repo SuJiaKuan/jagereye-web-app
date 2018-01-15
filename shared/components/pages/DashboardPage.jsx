@@ -8,6 +8,8 @@ import concat from 'lodash/concat';
 import join   from 'lodash/join';
 import map    from 'lodash/map';
 
+import readableTime from '../../lib/readableTime';
+
 import Loading from '../Loading.jsx';
 import Dialog  from '../Dialog.jsx';
 
@@ -103,7 +105,7 @@ export default class DashboardPage extends Component {
                     onClick   = {this.handlePreviewClicked.bind(this, tripwireEvent.video)}
                 />
             );
-            const time = tripwireEvent.timestamp.split('.')[0];
+            const time = readableTime(tripwireEvent.timestamp, false);
             const types = join(tripwireEvent.triggered, ', ');
             const camera = tripwireEvent.name;
 

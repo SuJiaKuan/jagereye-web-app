@@ -74,7 +74,7 @@ export default class CamerasPage extends Component {
                             style     = {previewStyle}
                         />
                         <div>
-                            {`From ${camera.name} at ${readableTime(timestamp)}`}
+                            {`From ${camera.name} ${readableTime(timestamp)}`}
                         </div>
                     </Link>
                 </MenuItem>
