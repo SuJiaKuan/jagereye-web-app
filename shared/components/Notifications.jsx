@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { IconButton } from 'react-mdl';
 import { Menu, MenuItem } from 'react-mdl-extra';
+import cx from 'classnames';
 import map from 'lodash/map';
 import find from 'lodash/find';
 
@@ -14,11 +15,15 @@ export default class CamerasPage extends Component {
         cameraList: PropTypes.arrayOf(PropTypes.object),
         notificationList: PropTypes.arrayOf(PropTypes.object),
         uncheckedCount: PropTypes.number,
-        onBtnClick: PropTypes.func
+        onBtnClick: PropTypes.func,
+        readNotification: PropTypes.func
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
 
+    handleItemClick = (id) => {
+        this.props.readNotification(id);
+    }
 
     render() {
         const { l } = this.context.i18n;
@@ -54,26 +59,32 @@ export default class CamerasPage extends Component {
             = notificationList.length > 0 ? l('Recent Events') : l('No Recent Events');
         const menuItems = map(notificationList, (notification, idx) => {
             const {
+                _id,
                 analyzer_id: analyzerId,
                 timestamp,
-                content
+                content,
+                read
             } = notification;
             const camera = find(cameraList, (o) => o._id === analyzerId);
             const previewStyle = {
                 background: `url(${content.thumbnail_name}) center / cover`
             };
+            const itemClass = cx('Notifcations__item', {
+                'Notifcations__item__read': read
+            });
 
             return (
                 <MenuItem key = {idx}>
                     <Link
-                        className = 'Notifcations__item'
-                        to         = '/dashboard'
+                        className = {itemClass}
+                        to = '/dashboard'
                     >
                         <div
                             className = 'Notifcations__item__preview'
-                            style     = {previewStyle}
+                            style = {previewStyle}
+                            onClick = {this.handleItemClick.bind(this, _id)}
                         />
-                        <div>
+                        <div onClick = {this.handleItemClick.bind(this, _id)}>
                             {`From ${camera.name} ${readableTime(timestamp)}`}
                         </div>
                     </Link>

@@ -3,7 +3,8 @@ import { connect }                     from 'react-redux';
 
 import {
     subscribeNotifications,
-    checkNotifications
+    checkNotifications,
+    readNotification
 } from '../actions/notifications';
 
 import Notifcations from '../components/Notifications.jsx';
@@ -24,11 +25,16 @@ class NotificationsContainer extends Component {
         this.props.dispatch(checkNotifications());
     }
 
+    readNotification = (id) => {
+        this.props.dispatch(readNotification(id));
+    }
+
     render() {
         return (
             <Notifcations
                 {...this.props}
                 onBtnClick = {this.handleBtnClick}
+                readNotification = {this.readNotification}
             />
         );
     }

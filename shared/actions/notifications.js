@@ -34,3 +34,14 @@ export function checkNotifications() {
         });
     };
 }
+
+export const READ_NOTIFICATION = 'READ_NOTIFICATION';
+
+export function readNotification(id) {
+    return dispatch => {
+        dispatch({
+            type : READ_NOTIFICATION,
+            id
+        });
+    };
+}

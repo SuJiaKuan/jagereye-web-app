@@ -1,3 +1,8 @@
+@unread-color: rgba(23, 172, 191, 0.3);
+@unread-hover-color: rgba(23, 172, 191, 0.7);
+@read-color: #FFF;
+@read-hover-color: #EEE;
+
 .Notifcations__btn {
     position: relative;
     cursor: pointer;
@@ -19,6 +24,43 @@
 }
 
 .mdl-portalmenu__list {
+    .mdl-portalmenu__item {
+        padding: 0;
+        height: auto;
+
+        .Notifcations__item  {
+            display: flex;
+            cursor: inherit;
+            text-decoration: none;
+            color: inherit;
+            font-weight: inherit;
+            font-size: 12px;
+            padding: 5px 2px;
+            background-color: @unread-color;
+            &:hover {
+                background-color: @unread-color;
+            }
+
+            &.Notifcations__item__read {
+                background-color: @read-color;
+                &:hover {
+                    background-color: @read-color;
+                }
+            }
+
+            > * {
+                margin: 3px;
+            }
+
+            flex-direction: row;
+
+            .Notifcations__item__preview {
+                width: 80px;
+                height: 45px;
+            }
+        }
+    }
+
     :first-child {
         display: flex;
         justify-content: center;
@@ -27,28 +69,8 @@
         &:hover {
             background-color: #FFF;
         }
-    }
-
-    .Notifcations__item  {
-        display: flex;
-        cursor: inherit;
-        text-decoration: none;
-        color: inherit;
-        font-weight: inherit;
-        font-size: 12px;
-        &:hover {
-            background-color: #EEE;
-        }
-
-        > * {
-            margin: 3px;
-        }
-
-        flex-direction: row;
-
-        .Notifcations__item__preview {
-            width: 80px;
-            height: 45px;
+        > h5 {
+            padding: 5px 3px;
         }
     }
 }
