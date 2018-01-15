@@ -1,3 +1,3 @@
 export default function readableTime(timestamp) {
-    return timestamp.split('.')[0];
+    return new Date(timestamp * 1000);
 }

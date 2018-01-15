@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { Link }                        from 'react-router';
-import { IconButton }                  from 'react-mdl';
-import { Menu, MenuItem }              from 'react-mdl-extra';
-import map                             from 'lodash/map';
+import { Link } from 'react-router';
+import { IconButton } from 'react-mdl';
+import { Menu, MenuItem } from 'react-mdl-extra';
+import map from 'lodash/map';
+import find from 'lodash/find';
 
 import readableTime from '../lib/readableTime';
 
@@ -10,9 +11,10 @@ import './Notifications.less';
 
 export default class CamerasPage extends Component {
     static propTypes = {
-        notificationList : PropTypes.arrayOf(PropTypes.object),
-        isChecked        : PropTypes.bool,
-        onBtnClick       : PropTypes.func
+        cameraList: PropTypes.arrayOf(PropTypes.object),
+        notificationList: PropTypes.arrayOf(PropTypes.object),
+        uncheckedCount: PropTypes.number,
+        onBtnClick: PropTypes.func
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
@@ -22,14 +24,15 @@ export default class CamerasPage extends Component {
         const { l } = this.context.i18n;
 
         const {
+            cameraList,
             notificationList,
-            isChecked,
+            uncheckedCount,
             onBtnClick
         } = this.props;
-        const count = notificationList.length > 99 ? 99 : notificationList.length;
+        const count = uncheckedCount > 99 ? 99 : uncheckedCount;
 
         const countStyle = {
-            'opacity': isChecked ? '0' : '1'
+            'opacity': count > 0 ? '1' : '0'
         };
         // XXX(JiaKuan Su): I register "onMouseDown" instead "onClick" because
         // "onClick" is registered by Menu.
@@ -47,15 +50,17 @@ export default class CamerasPage extends Component {
                 </div>
             </div>
         );
-        const headerText = count > 0 ? l('Recent Events') : l('No Recent Events');
+        const headerText
+            = notificationList.length > 0 ? l('Recent Events') : l('No Recent Events');
         const menuItems = map(notificationList, (notification, idx) => {
             const {
-                preview,
-                name,
-                timestamp
+                analyzer_id: analyzerId,
+                timestamp,
+                content
             } = notification;
+            const camera = find(cameraList, (o) => o._id === analyzerId);
             const previewStyle = {
-                background: `url(${preview}) center / cover`
+                background: `url(${content.thumbnail_name}) center / cover`
             };
 
             return (
@@ -69,7 +74,7 @@ export default class CamerasPage extends Component {
                             style     = {previewStyle}
                         />
                         <div>
-                            {`From ${name} at ${readableTime(timestamp)}`}
+                            {`From ${camera.name} at ${readableTime(timestamp)}`}
                         </div>
                     </Link>
                 </MenuItem>

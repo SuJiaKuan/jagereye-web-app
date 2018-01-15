@@ -31,7 +31,7 @@ export default class MainLayout extends Component {
                     <Navigation>
                         <Link to = '/dashboard'>{l('Dashboard')}</Link>
                         <Link to = '/cameras'>{l('Cameras')}</Link>
-                        <Notifcations />
+                        <Notifcations {...this.props} />
                     </Navigation>
                 </Header>
                 <div className = 'MainLayout__content'>
