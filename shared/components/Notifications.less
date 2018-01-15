@@ -23,6 +23,10 @@
     }
 }
 
+.mdl-dropdown {
+    max-height: 300px !important;
+}
+
 .mdl-portalmenu__list {
     .mdl-portalmenu__item {
         padding: 0;
@@ -30,7 +34,10 @@
 
         .Notifcations__item  {
             display: flex;
-            cursor: inherit;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
             text-decoration: none;
             color: inherit;
             font-weight: inherit;
@@ -52,11 +59,10 @@
                 margin: 3px;
             }
 
-            flex-direction: row;
-
             .Notifcations__item__preview {
                 width: 80px;
                 height: 45px;
+                cursor: pointer;
             }
         }
     }
