@@ -5,8 +5,6 @@ import {
     subscribeNotifications,
     checkNotifications
 } from '../actions/notifications';
-import { loadCameras } from '../actions/cameras';
-import connectDataFetchers from '../lib/connectDataFetchers.jsx';
 
 import Notifcations from '../components/Notifications.jsx';
 
@@ -47,6 +45,4 @@ function mapStateToProps({ cameras, notifications }) {
     };
 }
 
-export default connect(mapStateToProps)(
-    connectDataFetchers(NotificationsContainer, [ loadCameras ])
-);
+export default connect(mapStateToProps)(NotificationsContainer);

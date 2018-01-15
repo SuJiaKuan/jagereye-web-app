@@ -50,7 +50,6 @@ export default class MainLayoutContainer extends Component {
 
         return (
             <MainLayout
-                {...this.props}
                 showWelcomeScreen={!isEmbedded && isWelcomeScreenShown}
                 onWelcomeScreenDismiss={this.handleWelcomeScreenDismiss}
                 showFooter={false}

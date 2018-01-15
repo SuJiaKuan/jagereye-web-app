@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect }                     from 'react-redux';
 
+import { loadCameras } from '../../actions/cameras';
 import connectDataFetchers from '../../lib/connectDataFetchers.jsx';
 
 import DashboardPage from '../../components/pages/DashboardPage.jsx';
@@ -31,5 +32,5 @@ function mapStateToProps({ events, cameras }) {
     };
 }
 export default connect(mapStateToProps)(
-    connectDataFetchers(DashboardPageContainer, [])
+    connectDataFetchers(DashboardPageContainer, [ loadCameras ])
 );
