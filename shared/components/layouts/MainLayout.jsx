@@ -23,7 +23,7 @@ export default class MainLayout extends Component {
 
         const { showFooter, children } = this.props;
 
-        const title = <span style = {{ 'letter-spacing': '3px' }}>JagerEye</span>;
+        const title = <span style = {{ 'letterSpacing': '3px' }}>JagerEye</span>;
 
         return (
             <div className = 'MainLayout'>
