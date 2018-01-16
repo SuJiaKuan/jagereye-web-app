@@ -35,6 +35,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # Install JagerEye Web Application
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ffmpeg \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 COPY . ${HOME}/jagereye-web-app
 WORKDIR ${HOME}/jagereye-web-app
 RUN yarn global add pm2
@@ -42,5 +47,6 @@ RUN yarn install
 RUN yarn build
 
 EXPOSE 3001
+EXPOSE 8090
 
 CMD yarn docker-start
