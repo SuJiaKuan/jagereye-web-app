@@ -1,0 +1,20 @@
+# Git
+.git
+
+# Docker
+*Dockerfile*
+
+# Node.js
+node_modules
+
+# Auto-generated tag files
+tags
+
+.DS_Store
+
+# Project files
+public/static/build/
+public/static/config.js
+lang/*.mo
+lang/messages.pot
+etc/webpack-assets.json

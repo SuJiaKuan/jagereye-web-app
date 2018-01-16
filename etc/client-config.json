@@ -2,7 +2,7 @@
     "apiPrefix": "http://localhost:5000/api/v1",
     "wsPrefix": "ws://localhost:5000",
     "backgroundImagesPrefix": "http://app.itsquiz.com/be/static/images/backgrounds/",
-    "staticUrl": "http://localhost:8050",
+    "staticUrl": "http://localhost:3001",
     "landingURL": "https://itsquiz.com/",
     "loginUrl": "https://app.itsquiz.com/{lang}/login",
     "embedOrigin": "https://app.itsquiz.com/",
