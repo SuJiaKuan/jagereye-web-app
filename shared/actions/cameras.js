@@ -1,6 +1,8 @@
 import merge from 'lodash/merge';
 
 import api from '../apiSingleton';
+import ApiClient from '../api/ApiClient';
+import config from '../config';
 
 export const LOAD_CAMERAS_REQUEST = 'LOAD_CAMERAS_REQUEST';
 export const LOAD_CAMERAS_SUCCESS = 'LOAD_CAMERAS_SUCCESS';
@@ -120,6 +122,31 @@ export function addingCameraLeave() {
     return dispatch => {
         dispatch({
             type : ADDING_CAMERA_LEAVE
+        });
+    };
+}
+
+export const STREAM_VIEW_REQUEST = 'STREAM_VIEW_REQUEST';
+export const STREAM_VIEW_SUCCESS = 'STREAM_VIEW_SUCCESS';
+export const STREAM_VIEW_FAIL = 'STREAM_VIEW_FAIL';
+
+export function newStreamView(url) {
+    return dispatch => {
+        const apiClient = new ApiClient({ prefix: config.streamPrefix });
+
+        dispatch({
+            type : STREAM_VIEW_REQUEST
+        });
+
+        return apiClient.post('stream', { url }).then((result) => {
+            dispatch({
+                type : STREAM_VIEW_SUCCESS,
+                streamUrl: result.streamUrl
+            });
+        }).catch(() => {
+            dispatch({
+                type : STREAM_VIEW_FAIL
+            });
         });
     };
 }

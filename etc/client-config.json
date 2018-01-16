@@ -1,6 +1,7 @@
 {
     "apiPrefix": "http://localhost:5000/api/v1",
     "wsPrefix": "ws://localhost:5000",
+    "streamPrefix": "http://localhost:3001",
     "backgroundImagesPrefix": "http://app.itsquiz.com/be/static/images/backgrounds/",
     "staticUrl": "http://localhost:3001",
     "landingURL": "https://itsquiz.com/",

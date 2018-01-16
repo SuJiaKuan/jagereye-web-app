@@ -18,11 +18,13 @@ export default class CamerasPage extends Component {
         isLoading: PropTypes.bool,
         curCameraIdx: PropTypes.number,
         cameraList: PropTypes.arrayOf(PropTypes.object),
+        streamView: PropTypes.object,
         onCameraViewChange: PropTypes.func,
         onAdding: PropTypes.func,
         onStopAdding: PropTypes.func,
         addNewCamera: PropTypes.func,
-        deleteCamera: PropTypes.func
+        deleteCamera: PropTypes.func,
+        newStreamView: PropTypes.func
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
@@ -30,6 +32,44 @@ export default class CamerasPage extends Component {
     state = {
         shownContent : SHOWN_CONTENT.VIEW
     };
+
+    componentDidMount() {
+        const {
+            cameraList,
+            curCameraIdx
+        } = this.props;
+        const { shownContent } = this.state;
+
+        if (shownContent === SHOWN_CONTENT.VIEW && cameraList.length > 0) {
+            this.props.newStreamView(cameraList[curCameraIdx].source.url);
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const {
+            cameraList,
+            curCameraIdx
+        } = this.props;
+        const {
+            curCameraIdx: prevCameraIdx,
+            cameraList: prevCameraList
+        } = prevProps;
+        const { shownContent } = this.state;
+        const { showContent: prevShownContent } = prevState;
+
+        if (shownContent === SHOWN_CONTENT.VIEW
+            && cameraList.length > 0
+            && prevCameraList.length > 0
+            && cameraList[curCameraIdx].source.url !== prevCameraList[prevCameraIdx].source.url) {
+            return this.props.newStreamView(cameraList[curCameraIdx].source.url);
+        }
+
+        if (shownContent === SHOWN_CONTENT.VIEW
+            && prevShownContent === SHOWN_CONTENT.ADD
+            && cameraList.length > 0) {
+            return this.props.newStreamView(cameraList[curCameraIdx].source.url);
+        }
+    }
 
     handleDeleteBtnClick = (id) => {
         this.props.deleteCamera(id);
@@ -43,7 +83,12 @@ export default class CamerasPage extends Component {
         this.props.onCameraViewChange(idx);
     }
 
-    renderCameraView(camera) {
+    renderCameraView(camera, streamView) {
+        const imgSrc =
+            streamView.isAvailable ?
+            `${streamView.url}?${new Date().getTime()}` :
+            '/static/images/loading-default-black.svg';
+
         return (
             <div>
                 <div className = 'CamerasPage__view__title'>
@@ -54,8 +99,8 @@ export default class CamerasPage extends Component {
                     />
                 </div>
                 <img
-                    src    = {camera.source.url}
-                    width  = '960'
+                    src = {imgSrc}
+                    width = '960'
                     height = '540'
                 />
             </div>
@@ -83,8 +128,10 @@ export default class CamerasPage extends Component {
             isLoading,
             curCameraIdx,
             cameraList,
+            streamView,
             onAdding,
-            addNewCamera
+            addNewCamera,
+            newStreamView
         } = this.props;
 
         return (
@@ -94,14 +141,20 @@ export default class CamerasPage extends Component {
                 <div className = 'CamerasPage__content'>
                     {(() => {
                         if (isAdding) {
-                            return <AddCamera addNewCamera = {addNewCamera} />;
+                            return (
+                                <AddCamera
+                                    streamView = {streamView}
+                                    addNewCamera = {addNewCamera}
+                                    newStreamView = {newStreamView}
+                                />
+                            );
                         }
 
                         if (cameraList.length === 0) {
                             return <h1>Add your first camera</h1>;
                         }
 
-                        return this.renderCameraView(cameraList[curCameraIdx]);
+                        return this.renderCameraView(cameraList[curCameraIdx], streamView);
                     })()}
                 </div>
 

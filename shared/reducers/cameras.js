@@ -13,14 +13,21 @@ import {
     ADD_CAMERA_FAIL,
     DELETE_CAMERA_REQUEST,
     DELETE_CAMERA_SUCCESS,
-    DELETE_CAMERA_FAIL
+    DELETE_CAMERA_FAIL,
+    STREAM_VIEW_REQUEST,
+    STREAM_VIEW_SUCCESS,
+    STREAM_VIEW_FAIL
 } from '../actions/cameras';
 
 const DEFAULT_STATE = {
     isAdding  : false,
     isLoading : false,
     curCameraIdx: 0,
-    cameraList: []
+    cameraList: [],
+    streamView: {
+        isAvailable: false,
+        url: ''
+    }
 };
 
 export default function cameras(state = DEFAULT_STATE, action) {
@@ -120,6 +127,36 @@ export default function cameras(state = DEFAULT_STATE, action) {
             return {
                 ...state,
                 isLoading: false
+            };
+        }
+
+        case STREAM_VIEW_REQUEST: {
+            return {
+                ...state,
+                streamView: {
+                    isAvailable: false,
+                    url: ''
+                }
+            };
+        }
+
+        case STREAM_VIEW_SUCCESS: {
+            return {
+                ...state,
+                streamView: {
+                    isAvailable: true,
+                    url: action.streamUrl
+                }
+            };
+        }
+
+        case STREAM_VIEW_FAIL: {
+            return {
+                ...state,
+                streamView: {
+                    isAvailable: false,
+                    url: ''
+                }
             };
         }
 

@@ -7,7 +7,8 @@ import {
     addingCameraLeave,
     loadCameras,
     addCamera,
-    deleteCamera
+    deleteCamera,
+    newStreamView
 } from '../../actions/cameras';
 import connectDataFetchers from '../../lib/connectDataFetchers.jsx';
 
@@ -19,6 +20,7 @@ class CamerasPageContainer extends Component {
         isLoading: PropTypes.bool,
         curCameraIdx: PropTypes.number,
         cameraList: PropTypes.arrayOf(PropTypes.object),
+        streamView: PropTypes.object,
         dispatch: PropTypes.func
     };
 
@@ -42,15 +44,20 @@ class CamerasPageContainer extends Component {
         this.props.dispatch(deleteCamera(id));
     }
 
+    newStreamView = (url) => {
+        this.props.dispatch(newStreamView(url));
+    }
+
     render() {
         return (
             <CamerasPage
                 {...this.props}
-                addNewCamera = {this.addNewCamera}
-                deleteCamera = {this.deleteCamera}
                 onCameraViewChange = {this.handleCameraViewChange}
                 onAdding = {this.handleAddingCameraEnter}
                 onStopAdding = {this.handleAddingCameraLeave}
+                addNewCamera = {this.addNewCamera}
+                deleteCamera = {this.deleteCamera}
+                newStreamView = {this.newStreamView}
             />
         );
     }
@@ -61,14 +68,16 @@ function mapStateToProps({ cameras }) {
         isAdding,
         isLoading,
         curCameraIdx,
-        cameraList
+        cameraList,
+        streamView
     } = cameras;
 
     return {
         isAdding,
         isLoading,
         curCameraIdx,
-        cameraList
+        cameraList,
+        streamView
     };
 }
 export default connect(mapStateToProps)(

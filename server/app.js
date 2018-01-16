@@ -3,6 +3,7 @@ import querystring  from 'querystring';
 import express      from 'express';
 import cookieParser from 'cookie-parser';
 import serializeJs  from 'serialize-javascript';
+import bodyParser   from 'body-parser';
 
 import React                     from 'react';
 import ReactDOM                  from 'react-dom/server';
@@ -17,6 +18,7 @@ import api            from '../shared/apiSingleton';
 import { makeSlug }   from '../shared/utils/urlUtil';
 
 import clientConfig from '../shared/config';
+import serverConfig from '../etc/server-config';
 
 import ruLocaleData from '../public/static/lang/ru.json';
 import ukLocaleData from '../public/static/lang/uk.json';
@@ -29,6 +31,7 @@ import { fetchComponentsData,
          detectLocale,
          getIp,
          getAssetsPaths } from './utils';
+import streamProxy from './streamProxy';
 
 import send404 from './render404Html';
 
@@ -44,6 +47,16 @@ const app = express();
 
 app.use('/static', express.static('public/static'));
 app.use(cookieParser());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+      extended: true
+}));
+
+app.post(
+    '/stream',
+    streamProxy(serverConfig.streamProxy.prefix, serverConfig.streamProxy.port)
+);
 
 app.use((req, res) => {
     // Process old links like /en/activations

@@ -22,7 +22,9 @@ const TRIGGERS = [
 
 export default class AddCamera extends Component {
     static propTypes = {
-        addNewCamera : PropTypes.func
+        streamView: PropTypes.object,
+        addNewCamera : PropTypes.func,
+        newStreamView: PropTypes.func
     };
 
     static contextTypes = { i18n: PropTypes.object };
@@ -44,9 +46,21 @@ export default class AddCamera extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const prevStep = prevState.step;
-        const curStep = this.state.step;
+        const {
+            url,
+            step: curStep
+        } = this.state;
+        const {
+            newStreamView,
+            streamView: curStreamView
+        } = this.props;
+        const { streamView: prevStreamView } = prevProps;
 
         if (prevStep === FORM_STEP.NEW && curStep === FORM_STEP.CONFIG) {
+            newStreamView(url);
+        } else if (curStep === FORM_STEP.CONFIG
+                   && !prevStreamView.isAvailable
+                   && curStreamView.isAvailable) {
             const ctx = this.canvas.getContext('2d');
 
             this.canvasImg = new Image();
@@ -71,7 +85,7 @@ export default class AddCamera extends Component {
                     ctx.globalAlpha = 1;
                 }, 50);
             };
-            this.canvasImg.src = this.state.url;
+            this.canvasImg.src = `${curStreamView.url}?${new Date().getTime()}`;
         } else if (prevStep === FORM_STEP.CONFIG && curStep === FORM_STEP.NEW) {
             clearInterval(this.canvasTimer);
         }
@@ -203,6 +217,7 @@ export default class AddCamera extends Component {
     renderForm = () => {
         const { l } = this.context.i18n;
 
+        const { streamView } = this.props;
         const {
             name,
             url,
@@ -252,15 +267,29 @@ export default class AddCamera extends Component {
 
             return (
                 <form>
-                    <canvas
-                        ref         = {canvas => this.canvas = canvas}
-                        width       = '960'
-                        height      = '540'
-                        style       = {{ cursor: isDrawing ? 'nwse-resize' : 'crosshair' }}
-                        onMouseDown = {this.handleCanvasMouseDown}
-                        onMouseMove = {this.handleCanvasMouseMove}
-                        onMouseUp   = {this.handleCanvasMouseUp}
-                    />
+                    {(() => {
+                        if (!streamView.isAvailable) {
+                            return (
+                                <img
+                                    src = '/static/images/loading-default-black.svg'
+                                    width = '960'
+                                    height = '540'
+                                />
+                            );
+                        }
+
+                        return (
+                            <canvas
+                                ref         = {canvas => this.canvas = canvas}
+                                width       = '960'
+                                height      = '540'
+                                style       = {{ cursor: isDrawing ? 'nwse-resize' : 'crosshair' }}
+                                onMouseDown = {this.handleCanvasMouseDown}
+                                onMouseMove = {this.handleCanvasMouseMove}
+                                onMouseUp   = {this.handleCanvasMouseUp}
+                            />
+                        );
+                    })()}
                     <br />
                     <Grid>
                         {triggerCheckBoxes}
@@ -277,8 +306,9 @@ export default class AddCamera extends Component {
                     <Button
                         colored
                         ripple
+                        disabled = {!streamView.isAvailable}
                         onClick = {this.handleFinishBtnClick}
-                        style   = {{ float: 'right' }}
+                        style = {{ float: 'right' }}
                     >
                         {l('Finish')}
                     </Button>
