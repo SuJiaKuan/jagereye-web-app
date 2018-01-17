@@ -90,7 +90,7 @@ export function deleteCamera(id) {
             });
         }).catch(() => {
             dispatch({
-                type : ADD_CAMERA_FAIL
+                type : DELETE_CAMERA_FAIL
             });
         });
     };

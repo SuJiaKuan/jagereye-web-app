@@ -112,7 +112,7 @@ export default function cameras(state = DEFAULT_STATE, action) {
 
         case DELETE_CAMERA_SUCCESS: {
             const newCameraList = remove(state.cameraList, (camera) => (
-                camera.id !== action.id
+                camera._id !== action.id
             ));
 
             return {
