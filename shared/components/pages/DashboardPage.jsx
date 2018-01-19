@@ -98,13 +98,13 @@ export default class DashboardPage extends Component {
 
         const data = map(tripwireEventList, (tripwireEvent) => {
             const previewStyle = {
-                background: `url(${tripwireEvent.preview}) center / cover`
+                background: `url(/shared/${tripwireEvent.content.thumbnail_name}) center / cover`
             };
             const preview = (
                 <div
                     className = 'DashboardPage__events__preview'
                     style     = {previewStyle}
-                    onClick   = {this.handlePreviewClicked.bind(this, tripwireEvent.video)}
+                    onClick   = {this.handlePreviewClicked.bind(this, `/shared/${tripwireEvent.content.video_name}`)}
                 />
             );
             const time = readableTime(tripwireEvent.timestamp, false);

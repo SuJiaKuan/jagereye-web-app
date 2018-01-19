@@ -46,6 +46,7 @@ const i18nToolsRegistry = {
 const app = express();
 
 app.use('/static', express.static('public/static'));
+app.use('/shared', express.static(`${process.env.HOME}/jagereye_shared`));
 app.use(cookieParser());
 
 app.use(bodyParser.json());
