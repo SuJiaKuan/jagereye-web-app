@@ -23,11 +23,17 @@ class DashboardPageContainer extends Component {
 }
 
 function mapStateToProps({ events, cameras }) {
-    const { isLoading, eventList } = events;
-    const { cameraList } = cameras;
+    const {
+        isLoading: isSearchingEvents,
+        eventList
+    } = events;
+    const {
+        isLoading: isLoadingCameras,
+        cameraList
+    } = cameras;
 
     return {
-        isLoading,
+        isLoading: isSearchingEvents || isLoadingCameras,
         eventList,
         cameraList
     };
