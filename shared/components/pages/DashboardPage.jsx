@@ -5,8 +5,10 @@ import { DataTable, TableHeader, Button, Grid, Cell } from 'react-mdl';
 
 import moment from 'moment';
 import concat from 'lodash/concat';
-import join   from 'lodash/join';
-import map    from 'lodash/map';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import join from 'lodash/join';
+import map from 'lodash/map';
 
 import readableTime from '../../lib/readableTime';
 
@@ -23,9 +25,9 @@ const ALL = 'all';
 
 export default class DashboardPage extends Component {
     static propTypes = {
-        isLoading      : PropTypes.bool,
-        tripwireEvents : PropTypes.arrayOf(PropTypes.object),
-        cameraList : PropTypes.arrayOf(PropTypes.object)
+        isLoading: PropTypes.bool,
+        eventList: PropTypes.arrayOf(PropTypes.object),
+        cameraList: PropTypes.arrayOf(PropTypes.object)
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
@@ -78,7 +80,7 @@ export default class DashboardPage extends Component {
         });
     }
 
-    renderTripwireEvents(tripwireEvents, cameraList) {
+    renderTripwireEvents(tripwireEventList, cameraList) {
         const { l } = this.context.i18n;
 
         const {
@@ -94,7 +96,7 @@ export default class DashboardPage extends Component {
             <option dataValue = {name}>{l(name)}</option>
         ));
 
-        const data = map(tripwireEvents, (tripwireEvent) => {
+        const data = map(tripwireEventList, (tripwireEvent) => {
             const previewStyle = {
                 background: `url(${tripwireEvent.preview}) center / cover`
             };
@@ -106,13 +108,16 @@ export default class DashboardPage extends Component {
                 />
             );
             const time = readableTime(tripwireEvent.timestamp, false);
-            const types = join(tripwireEvent.triggered, ', ');
-            const camera = tripwireEvent.name;
+            const types = join(tripwireEvent.content.triggered, ', ');
+            const camera = find(cameraList, {
+                _id: tripwireEvent.analyzerId
+            });
+            const cameraName = camera ? camera.name : l('Unkown');
 
             return {
                 preview,
                 time,
-                camera,
+                camera: cameraName,
                 types
             };
         });
@@ -178,7 +183,7 @@ export default class DashboardPage extends Component {
                 </Grid>
 
                 {(() => {
-                    if (tripwireEvents.length === 0) {
+                    if (tripwireEventList.length === 0) {
                         return <h1>{l('No events yet :)')}</h1>;
                     }
 
@@ -202,9 +207,13 @@ export default class DashboardPage extends Component {
     render() {
         const {
             isLoading,
-            tripwireEvents,
+            eventList,
             cameraList
         } = this.props;
+
+        const tripwireEventList = filter(eventList, {
+            type: 'tripwire_alert'
+        });
 
         const { videoUrl } = this.state;
 
@@ -225,7 +234,7 @@ export default class DashboardPage extends Component {
                 </Dialog>
 
                 {(() => {
-                    return this.renderTripwireEvents(tripwireEvents, cameraList);
+                    return this.renderTripwireEvents(tripwireEventList, cameraList);
                 })()}
             </div>
 

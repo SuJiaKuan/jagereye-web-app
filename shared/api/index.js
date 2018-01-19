@@ -3,6 +3,7 @@ import ActivationsAPI       from './Activations';
 import AccountsAPI          from './Accounts';
 import AssessmentSystemsAPI from './AssessmentSystems';
 import AnalyzersAPI         from './Analyzers';
+import EventsAPI            from './Events';
 
 export default function ({ apiPrefix } = {}) {
     if (!apiPrefix) {
@@ -16,6 +17,7 @@ export default function ({ apiPrefix } = {}) {
         activations       : new ActivationsAPI({ apiClient: api }),
         accounts          : new AccountsAPI({ apiClient: api }),
         assessmentSystems : new AssessmentSystemsAPI({ apiClient: api }),
-        analyzers         : new AnalyzersAPI({ apiClient: api })
+        analyzers         : new AnalyzersAPI({ apiClient: api }),
+        events            : new EventsAPI({ apiClient: api })
     };
 }
