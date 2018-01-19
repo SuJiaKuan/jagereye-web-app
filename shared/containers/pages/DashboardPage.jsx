@@ -15,9 +15,16 @@ class DashboardPageContainer extends Component {
         dispatch: PropTypes.func
     };
 
+    searchEvents = ({ query }) => {
+        this.props.dispatch(searchEvents({ query }));
+    }
+
     render() {
         return (
-            <DashboardPage {...this.props} />
+            <DashboardPage
+                {...this.props}
+                searchEvents = {this.searchEvents}
+            />
         );
     }
 }

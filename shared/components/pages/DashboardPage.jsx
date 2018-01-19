@@ -15,40 +15,35 @@ import readableTime from '../../lib/readableTime';
 import Loading from '../Loading.jsx';
 import Dialog  from '../Dialog.jsx';
 
-import { TRIGGERS } from '../../const';
-
 import 'react-material-select/lib/css/reactMaterialSelect.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import './DashboardPage.less';
 
-const ALL = 'all';
+const ALL_CAMERAS = {
+    _id: 'all',
+    name: 'all'
+};
 
 export default class DashboardPage extends Component {
     static propTypes = {
         isLoading: PropTypes.bool,
         eventList: PropTypes.arrayOf(PropTypes.object),
-        cameraList: PropTypes.arrayOf(PropTypes.object)
+        cameraList: PropTypes.arrayOf(PropTypes.object),
+        searchEvents: PropTypes.func
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
 
     state = {
-        searchType: ALL,
-        searchCamera: ALL,
+        searchCamera: ALL_CAMERAS._id,
         startDate: moment(),
         endDate: moment(),
         videoUrl: ''
     };
 
-    handleSearchTypeChange = (selected) => {
-        this.setState({
-            searchType: selected.label
-        });
-    }
-
     handleSearchCameraChange = (selected) => {
         this.setState({
-            searchCamera: selected.label
+            searchCamera: selected.value
         });
     }
 
@@ -65,7 +60,26 @@ export default class DashboardPage extends Component {
     }
 
     handleSearchBtnClick = () => {
-        // TODO(JiaKuan Su): Implementation.
+        const {
+            startDate,
+            endDate,
+            searchCamera
+        } = this.state;
+
+        const start = startDate.hours(0).minutes(0).seconds(0).unix();
+        const end = endDate.hours(23).minutes(59).seconds(59).unix();
+        const query = {
+            timestamp: {
+                start,
+                end
+            }
+        };
+
+        if (searchCamera !== ALL_CAMERAS._id) {
+            query.analyzers = [ searchCamera ];
+        }
+
+        this.props.searchEvents({ query });
     }
 
     handlePreviewClicked = (videoUrl) => {
@@ -88,12 +102,8 @@ export default class DashboardPage extends Component {
             endDate
         } = this.state;
 
-        const searchTypes = map(concat([ ALL ], TRIGGERS), (trigger) => (
-            <option dataValue = {trigger}>{l(trigger)}</option>
-        ));
-        const cameraNames = map(cameraList, (camera) => camera.name);
-        const searchCameras = map(concat([ ALL ], cameraNames), (name) => (
-            <option dataValue = {name}>{l(name)}</option>
+        const searchCameras = map(concat([ ALL_CAMERAS ], cameraList), (camera) => (
+            <option dataValue = {camera._id}>{l(camera.name)}</option>
         ));
 
         const data = map(tripwireEventList, (tripwireEvent) => {
@@ -108,39 +118,27 @@ export default class DashboardPage extends Component {
                 />
             );
             const time = readableTime(tripwireEvent.timestamp, false);
-            const types = join(tripwireEvent.content.triggered, ', ');
+            const triggered = join(tripwireEvent.content.triggered, ', ');
             const camera = find(cameraList, {
                 _id: tripwireEvent.analyzerId
             });
-            const cameraName = camera ? camera.name : l('Unkown');
+            const cameraName = camera ? camera.name : l('Unknown');
 
             return {
                 preview,
                 time,
                 camera: cameraName,
-                types
+                triggered
             };
         });
 
         return (
             <div className = 'DashboardPage__events'>
-                <h3>{l('Tripwire Events')}</h3>
-
                 <Grid className = 'DashboardPage__search demo-grid-ruler'>
-                    <Cell col = {6}>
-                        <SelectField
-                            label        = {l('Type')}
-                            defaultValue = {ALL}
-                            resetLabel   = {false}
-                            onChange     = {this.handleSearchTypeChange}
-                        >
-                            {searchTypes}
-                        </SelectField>
-                    </Cell>
-                    <Cell col = {6}>
+                    <Cell col = {3}>
                         <SelectField
                             label        = {l('Camera')}
-                            defaultValue = {ALL}
+                            defaultValue = {ALL_CAMERAS._id}
                             resetLabel   = {false}
                             onChange     = {this.handleSearchCameraChange}
                         >
@@ -148,7 +146,7 @@ export default class DashboardPage extends Component {
                         </SelectField>
                     </Cell>
                     <Cell
-                        col = {5}
+                        col = {4}
                         align = 'middle'
                     >
                         <div className = 'DashboardPage__search__date'>
@@ -160,7 +158,7 @@ export default class DashboardPage extends Component {
                         </div>
                     </Cell>
                     <Cell
-                        col = {5}
+                        col = {4}
                         align = 'middle'
                     >
                         <div className = 'DashboardPage__search__date'>
@@ -171,7 +169,10 @@ export default class DashboardPage extends Component {
                             />
                         </div>
                     </Cell>
-                    <Cell col = {2}>
+                    <Cell
+                        col = {1}
+                        align = 'middle'
+                    >
                         <Button
                             raised
                             colored
@@ -181,6 +182,8 @@ export default class DashboardPage extends Component {
                         </Button>
                     </Cell>
                 </Grid>
+
+                <h5>{l('Tripwire Events')}</h5>
 
                 {(() => {
                     if (tripwireEventList.length === 0) {
@@ -196,7 +199,7 @@ export default class DashboardPage extends Component {
                             <TableHeader name = 'preview'>{l('Preview')}</TableHeader>
                             <TableHeader name = 'time'>{l('Time')}</TableHeader>
                             <TableHeader name = 'camera'>{l('Camera')}</TableHeader>
-                            <TableHeader name = 'types'>{l('Types')}</TableHeader>
+                            <TableHeader name = 'triggered'>{l('Triggered')}</TableHeader>
                         </DataTable>
                     );
                 })()}

@@ -7,7 +7,7 @@ export const SEARCH_EVENTS_REQUEST = 'SEARCH_EVENTS_REQUEST';
 export const SEARCH_EVENTS_SUCCESS = 'SEARCH_EVENTS_SUCCESS';
 export const SEARCH_EVENTS_FAIL = 'SEARCH_EVENTS_FAIL';
 
-export function searchEvents({ query }) {
+export function searchEvents({ query = {} }) {
     return dispatch => {
         dispatch({
             type: SEARCH_EVENTS_REQUEST
