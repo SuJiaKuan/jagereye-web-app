@@ -4,7 +4,7 @@ export const NEW_NOTIFICATIONS = 'NEW_NOTIFICATIONS';
 
 export function subscribeNotifications() {
     return dispatch => {
-        const url = `${config.wsPrefix}/notifications`;
+        const url = `${config.wsPrefix}/notification`;
         const ws = new WebSocket(url, 'protocolOne');
 
         ws.onopen = () => {
@@ -19,7 +19,7 @@ export function subscribeNotifications() {
         ws.onmessage = (event) => {
             dispatch({
                 type: NEW_NOTIFICATIONS,
-                notificationList: event.data
+                notificationList: JSON.parse(event.data.replace(/'/g, '"'))
             });
         };
     };

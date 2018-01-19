@@ -60,12 +60,13 @@ export default class CamerasPage extends Component {
         const menuItems = map(notificationList, (notification, idx) => {
             const {
                 _id,
-                analyzer_id: analyzerId,
+                analyzerId,
                 timestamp,
                 content,
                 read
             } = notification;
             const camera = find(cameraList, (o) => o._id === analyzerId);
+            const cameraName = camera ? camera.name : l('Unknown');
             const previewStyle = {
                 background: `url(${content.thumbnail_name}) center / cover`
             };
@@ -85,7 +86,7 @@ export default class CamerasPage extends Component {
                             onClick = {this.handleItemClick.bind(this, _id)}
                         />
                         <div onClick = {this.handleItemClick.bind(this, _id)}>
-                            {`From ${camera.name} ${readableTime(timestamp)}`}
+                            {`From ${cameraName} ${readableTime(timestamp)}`}
                         </div>
                     </Link>
                 </MenuItem>
