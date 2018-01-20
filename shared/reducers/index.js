@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import events                  from './events';
+import errors                  from './errors';
 import cameras                 from './cameras';
 import notifications           from './notifications';
 import activations             from './activations';
@@ -11,6 +12,7 @@ import currentAssessmentSystem from './currentAssessmentSystem';
 
 const rootReducer = combineReducers({
     events,
+    errors,
     cameras,
     notifications,
     activations,

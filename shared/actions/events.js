@@ -2,6 +2,7 @@ import merge from 'lodash/merge';
 import moment from 'moment';
 
 import api from '../apiSingleton';
+import { raiseError } from './errors';
 
 export const SEARCH_EVENTS_REQUEST = 'SEARCH_EVENTS_REQUEST';
 export const SEARCH_EVENTS_SUCCESS = 'SEARCH_EVENTS_SUCCESS';
@@ -27,10 +28,11 @@ export function searchEvents({ query = {} }) {
                 type: SEARCH_EVENTS_SUCCESS,
                 eventList
             });
-        }).catch(() => {
+        }).catch((error) => {
             dispatch({
                 type: SEARCH_EVENTS_FAIL
             });
+            dispatch(raiseError(error));
         });
     };
 }

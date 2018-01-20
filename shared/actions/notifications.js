@@ -1,4 +1,5 @@
 import config from '../config';
+import { raiseError } from './errors';
 
 export const NEW_NOTIFICATIONS = 'NEW_NOTIFICATIONS';
 
@@ -12,8 +13,7 @@ export function subscribeNotifications() {
         };
 
         ws.onerror = (error) => {
-            // TODO: Error handling.
-            console.error(error);
+            raiseError(error);
         };
 
         ws.onmessage = (event) => {

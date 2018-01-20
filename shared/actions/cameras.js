@@ -3,6 +3,7 @@ import merge from 'lodash/merge';
 import api from '../apiSingleton';
 import ApiClient from '../api/ApiClient';
 import config from '../config';
+import { raiseError } from './errors';
 
 export const LOAD_CAMERAS_REQUEST = 'LOAD_CAMERAS_REQUEST';
 export const LOAD_CAMERAS_SUCCESS = 'LOAD_CAMERAS_SUCCESS';
@@ -19,10 +20,11 @@ export function loadCameras() {
                 type : LOAD_CAMERAS_SUCCESS,
                 cameraList: result
             });
-        }).catch(() => {
+        }).catch((error) => {
             dispatch({
                 type : LOAD_CAMERAS_FAIL
             });
+            dispatch(raiseError(error));
         });
     };
 }
@@ -65,10 +67,11 @@ export function addCamera({ params = {} }) {
                 type   : ADD_CAMERA_SUCCESS,
                 camera
             });
-        }).catch(() => {
+        }).catch((error) => {
             dispatch({
                 type : ADD_CAMERA_FAIL
             });
+            dispatch(raiseError(error));
         });
     };
 }
@@ -88,10 +91,11 @@ export function deleteCamera(id) {
                 type : DELETE_CAMERA_SUCCESS,
                 id
             });
-        }).catch(() => {
+        }).catch((error) => {
             dispatch({
                 type : DELETE_CAMERA_FAIL
             });
+            dispatch(raiseError(error));
         });
     };
 }
@@ -143,10 +147,11 @@ export function newStreamView(url) {
                 type : STREAM_VIEW_SUCCESS,
                 streamUrl: result.streamUrl
             });
-        }).catch(() => {
+        }).catch((error) => {
             dispatch({
                 type : STREAM_VIEW_FAIL
             });
+            dispatch(raiseError(error));
         });
     };
 }

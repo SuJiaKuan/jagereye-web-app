@@ -3,6 +3,7 @@ import { Header, Navigation }          from 'react-mdl';
 import { Link }                        from 'react-router';
 
 import Notifcations from '../../containers/Notifications.jsx';
+import ErrorDialog from '../../containers/ErrorDialog.jsx';
 import Footer       from '../../containers/Footer.jsx';
 
 import './MainLayout.less';
@@ -27,6 +28,8 @@ export default class MainLayout extends Component {
 
         return (
             <div className = 'MainLayout'>
+                <ErrorDialog />
+
                 <Header title={title}>
                     <Navigation>
                         <Link to = '/dashboard'>{l('Dashboard')}</Link>
