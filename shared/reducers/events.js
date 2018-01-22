@@ -1,3 +1,5 @@
+import orderBy from 'lodash/orderBy';
+
 import {
     SEARCH_EVENTS_REQUEST,
     SEARCH_EVENTS_SUCCESS,
@@ -22,7 +24,7 @@ export default function events(state = DEFAULT_STATE, action) {
             return {
                 ...state,
                 isLoading: false,
-                eventList: action.eventList
+                eventList: orderBy(action.eventList, 'timestamp', 'desc')
             };
         }
 
