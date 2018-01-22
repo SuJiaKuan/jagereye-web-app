@@ -9,11 +9,6 @@ import config from '../../config';
 
 import './CamerasPage.less';
 
-const SHOWN_CONTENT = {
-    VIEW: 'VIEW',
-    ADD: 'ADD'
-};
-
 export default class CamerasPage extends Component {
     static propTypes = {
         isAdding: PropTypes.bool,
@@ -31,43 +26,39 @@ export default class CamerasPage extends Component {
 
     static contextTypes = { i18n: React.PropTypes.object };
 
-    state = {
-        shownContent : SHOWN_CONTENT.VIEW
-    };
-
     componentDidMount() {
         const {
+            isAdding,
             cameraList,
             curCameraIdx
         } = this.props;
-        const { shownContent } = this.state;
 
-        if (shownContent === SHOWN_CONTENT.VIEW && cameraList.length > 0) {
+        if (!isAdding && cameraList.length > 0) {
             this.props.newStreamView(cameraList[curCameraIdx].source.url);
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
+            isAdding,
             cameraList,
             curCameraIdx
         } = this.props;
         const {
+            isAdding: prevIsAdding,
             curCameraIdx: prevCameraIdx,
             cameraList: prevCameraList
         } = prevProps;
-        const { shownContent } = this.state;
-        const { showContent: prevShownContent } = prevState;
 
-        if (shownContent === SHOWN_CONTENT.VIEW
+        if (!isAdding
             && cameraList.length > 0
             && prevCameraList.length > 0
             && cameraList[curCameraIdx].source.url !== prevCameraList[prevCameraIdx].source.url) {
             return this.props.newStreamView(cameraList[curCameraIdx].source.url);
         }
 
-        if (shownContent === SHOWN_CONTENT.VIEW
-            && prevShownContent === SHOWN_CONTENT.ADD
+        if (!isAdding
+            && prevIsAdding
             && cameraList.length > 0) {
             return this.props.newStreamView(cameraList[curCameraIdx].source.url);
         }
@@ -78,9 +69,6 @@ export default class CamerasPage extends Component {
     }
 
     handleCameraItemClick = (idx) => {
-        this.setState({
-            shownContent: SHOWN_CONTENT.VIEW
-        });
         this.props.onStopAdding();
         this.props.onCameraViewChange(idx);
     }
