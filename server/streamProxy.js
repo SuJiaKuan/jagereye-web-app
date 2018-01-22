@@ -1,3 +1,4 @@
+const killPort = require('kill-port');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const Promise = require('bluebird');
@@ -47,6 +48,11 @@ export default function streamProxy(prefix, port) {
     return (req, res) => {
         const { url } = req.body;
 
+        if (ffserver && !ffserver.killed) {
+            ffserver.stdout.destroy();
+            ffserver.kill();
+        }
+
         ffprobe(url)
         .then(metadata => {
             const { width, height } = metadata.streams[0];
@@ -59,17 +65,21 @@ export default function streamProxy(prefix, port) {
             return writeFile(FFSERVER_CONFIG_NAME, ffserverConfig);
         })
         .then(() => {
-            if (ffserver) {
-                ffserver.kill();
-            }
             ffserver = spawn('ffserver', ['-f', FFSERVER_CONFIG_NAME]);
 
             ffserver.stdout.on('data', (data) => {
                 // Send response when ffserver is ready.
                 if (includes(data.toString(), '[GET] "/feed1.ffm')) {
+                    ffserver.stdout.destroy();
                     return res.send({
                         streamUrl
                     });
+                }
+                // Kill by port when ffserver could not be started.
+                // TODO(JiaKuan Su): Reply with error.
+                if (includes(data.toString(), 'Could not start server')) {
+                    killPort(port)
+                    .catch(() => {})
                 }
             });
 

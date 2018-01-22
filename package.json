@@ -41,6 +41,7 @@
     "history": "^1.13.1",
     "isomorphic-fetch": "^2.2.0",
     "jed": "^1.1.0",
+    "kill-port": "^1.1.0",
     "lodash": "^4.17.4",
     "markdown-it": "^6.0.0",
     "moment": "^2.16.0",
