@@ -231,6 +231,7 @@ export default class DashboardPage extends Component {
                     onRequestClose = {this.handleVideoDialogClose}
                 >
                     <video
+                        className = 'DashboardPage__dialog__video'
                         src = {videoUrl}
                         controls
                         autoPlay
