@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { Checkbox, Textfield, Grid, Cell } from 'react-mdl';
 import clone from 'lodash/clone';
+import includes from 'lodash/includes';
 import fill from 'lodash/fill';
 import filter from 'lodash/filter';
+import isEqual from 'lodash/isEqual';
 import map from 'lodash/map';
 
 import Button from 'react-mdl/lib/Button';
@@ -221,12 +223,15 @@ export default class AddCamera extends Component {
         const {
             name,
             url,
+            region,
             triggersChecked,
             step,
             isDrawing
         } = this.state;
 
         if (step === FORM_STEP.NEW) {
+            const nextBtnDisabled = !name || !url;
+
             return (
                 <form>
                     <Textfield
@@ -242,6 +247,7 @@ export default class AddCamera extends Component {
                     />
                     <br />
                     <Button
+                        disabled = {nextBtnDisabled}
                         colored
                         ripple
                         onClick = {this.handleNextBtnClick}
@@ -264,6 +270,16 @@ export default class AddCamera extends Component {
                     />
                 </Cell>
             ));
+            const finishBtnDisabled =
+                !streamView.isAvailable ||
+                !includes(triggersChecked, true) ||
+                isEqual(region, [ {
+                    x: 0,
+                    y: 0
+                }, {
+                    x: 0,
+                    y: 0
+                } ]);
 
             return (
                 <form>
@@ -306,7 +322,7 @@ export default class AddCamera extends Component {
                     <Button
                         colored
                         ripple
-                        disabled = {!streamView.isAvailable}
+                        disabled = {finishBtnDisabled}
                         onClick = {this.handleFinishBtnClick}
                         style = {{ float: 'right' }}
                     >
