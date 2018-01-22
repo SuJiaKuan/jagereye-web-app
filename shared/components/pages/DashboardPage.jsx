@@ -59,7 +59,9 @@ export default class DashboardPage extends Component {
         });
     }
 
-    handleSearchBtnClick = () => {
+    handleSearchBtnClick = (e) => {
+        e.preventDefault();
+
         const {
             startDate,
             endDate,
