@@ -102,8 +102,8 @@ export default class CamerasPage extends Component {
                 </div>
                 <img
                     src = {imgSrc}
-                    width = '960'
-                    height = '540'
+                    width = '700'
+                    height = '394'
                 />
             </div>
         );

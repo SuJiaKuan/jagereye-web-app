@@ -272,8 +272,8 @@ export default class AddCamera extends Component {
                             return (
                                 <img
                                     src = '/static/images/loading-default-black.svg'
-                                    width = '960'
-                                    height = '540'
+                                    width = '700'
+                                    height = '394'
                                 />
                             );
                         }
@@ -281,8 +281,8 @@ export default class AddCamera extends Component {
                         return (
                             <canvas
                                 ref         = {canvas => this.canvas = canvas}
-                                width       = '960'
-                                height      = '540'
+                                width       = '700'
+                                height      = '394'
                                 style       = {{ cursor: isDrawing ? 'nwse-resize' : 'crosshair' }}
                                 onMouseDown = {this.handleCanvasMouseDown}
                                 onMouseMove = {this.handleCanvasMouseMove}
