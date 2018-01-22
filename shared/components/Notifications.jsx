@@ -78,7 +78,7 @@ export default class CamerasPage extends Component {
                 <MenuItem key = {idx}>
                     <Link
                         className = {itemClass}
-                        to = '/dashboard'
+                        to = {`/dashboard?${new Date().getTime()}`}
                     >
                         <div
                             className = 'Notifcations__item__preview'
