@@ -5,6 +5,8 @@ import { Button, IconButton } from 'react-mdl';
 import AddCamera from '../AddCamera.jsx';
 import Loading   from '../Loading.jsx';
 
+import config from '../../config';
+
 import './CamerasPage.less';
 
 const SHOWN_CONTENT = {
@@ -161,13 +163,16 @@ export default class CamerasPage extends Component {
                 <div className = 'CamerasPage__sidebar'>
                     {this.renderCameraList(cameraList)}
                     <br />
-                    <Button
-                        colored
-                        ripple
-                        onClick = {onAdding}
-                    >
-                        {l('+ Add Camera')}
-                    </Button>
+                    {
+                        cameraList.length < config.camerasLimit &&
+                        <Button
+                            colored
+                            ripple
+                            onClick = {onAdding}
+                        >
+                            {l('+ Add Camera')}
+                        </Button>
+                    }
                 </div>
             </div>
         );

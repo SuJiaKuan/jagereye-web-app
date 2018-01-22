@@ -4,6 +4,7 @@
     "streamPrefix": "http://localhost:3001",
     "backgroundImagesPrefix": "http://app.itsquiz.com/be/static/images/backgrounds/",
     "staticUrl": "http://localhost:3001",
+    "camerasLimit": 4,
     "landingURL": "https://itsquiz.com/",
     "loginUrl": "https://app.itsquiz.com/{lang}/login",
     "embedOrigin": "https://app.itsquiz.com/",
