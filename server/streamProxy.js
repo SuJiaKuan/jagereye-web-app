@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 const { spawn } = require('child_process');
 
 const includes = require('lodash/includes');
+const find = require('lodash/find');
 
 const ffprobe = Promise.promisify(ffmpeg.ffprobe);
 const writeFile = Promise.promisify(fs.writeFile);
@@ -55,7 +56,15 @@ export default function streamProxy(prefix, port) {
 
         ffprobe(url)
         .then(metadata => {
-            const { width, height } = metadata.streams[0];
+            const stream = find(metadata.streams, (stream) => (
+                stream.width > 0 && stream.height > 0
+            ));
+
+            if (!stream) {
+                throw Error(`Can not get video size for ${url}`);
+            }
+
+            const { width, height } = stream;
             const ffserverConfig = renderFFServerConfig({
                 url,
                 width,
