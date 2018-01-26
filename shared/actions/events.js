@@ -18,7 +18,7 @@ export function searchEvents({ query = {} }) {
 
         const finalQuery = merge({}, query, {
             timestamp: {
-                start: timestamp && timestamp.start ? timestamp.start : moment().subtract(7, 'days').unix(),
+                start: timestamp && timestamp.start ? timestamp.start : moment().subtract(3, 'days').unix(),
                 end: timestamp && timestamp.end ? timestamp.end : moment().unix()
             }
         });

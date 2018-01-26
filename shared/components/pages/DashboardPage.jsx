@@ -40,7 +40,7 @@ export default class DashboardPage extends Component {
 
     state = {
         searchCamera: ALL_CAMERAS._id,
-        startDate: moment(),
+        startDate: moment().subtract(3, 'days'),
         endDate: moment(),
         videoUrl: '',
         numShownEvents: MIN_NUM_SHOWN_EVENTS
@@ -111,12 +111,17 @@ export default class DashboardPage extends Component {
         });
     }
 
+    readableDate(date) {
+        return date.format('MM/DD/YYYY');
+    }
+
     renderTripwireEvents(tripwireEventList, cameraList) {
         const { l } = this.context.i18n;
 
         const {
             startDate,
             endDate,
+            searchCamera,
             numShownEvents
         } = this.state;
 
@@ -206,7 +211,18 @@ export default class DashboardPage extends Component {
 
                 {(() => {
                     if (tripwireEventList.length === 0) {
-                        return <h1>{l('No events yet :)')}</h1>;
+                        const searchCameraName =
+                            searchCamera === ALL_CAMERAS._id ?
+                            ALL_CAMERAS.name :
+                            find(cameraList, { _id: searchCamera }).name;
+
+                        return (
+                            <div>
+                                <h6>{l('No events for following search')}</h6>
+                                <div>{`Camera: ${searchCameraName}`}</div>
+                                <div>{`Date: ${this.readableDate(startDate)} to ${this.readableDate(endDate)}`}</div>
+                            </div>
+                        );
                     }
 
                     return (
