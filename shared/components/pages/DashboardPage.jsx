@@ -9,6 +9,7 @@ import filter from 'lodash/filter';
 import find from 'lodash/find';
 import join from 'lodash/join';
 import map from 'lodash/map';
+import slice from 'lodash/slice';
 
 import readableTime from '../../lib/readableTime';
 
@@ -24,6 +25,9 @@ const ALL_CAMERAS = {
     name: 'all'
 };
 
+const MIN_NUM_SHOWN_EVENTS = 5;
+const MORE_SHOWN_EVENTS_STEP = 5;
+
 export default class DashboardPage extends Component {
     static propTypes = {
         isLoading: PropTypes.bool,
@@ -38,7 +42,8 @@ export default class DashboardPage extends Component {
         searchCamera: ALL_CAMERAS._id,
         startDate: moment(),
         endDate: moment(),
-        videoUrl: ''
+        videoUrl: '',
+        numShownEvents: MIN_NUM_SHOWN_EVENTS
     };
 
     handleSearchCameraChange = (selected) => {
@@ -81,6 +86,10 @@ export default class DashboardPage extends Component {
             query.analyzers = [ searchCamera ];
         }
 
+        this.setState({
+            numShownEvents: MIN_NUM_SHOWN_EVENTS
+        });
+
         this.props.searchEvents({ query });
     }
 
@@ -96,19 +105,27 @@ export default class DashboardPage extends Component {
         });
     }
 
+    handleMoreBtnClick = () => {
+        this.setState({
+            numShownEvents: this.state.numShownEvents + MORE_SHOWN_EVENTS_STEP
+        });
+    }
+
     renderTripwireEvents(tripwireEventList, cameraList) {
         const { l } = this.context.i18n;
 
         const {
             startDate,
-            endDate
+            endDate,
+            numShownEvents
         } = this.state;
 
         const searchCameras = map(concat([ ALL_CAMERAS ], cameraList), (camera) => (
             <option dataValue = {camera._id}>{l(camera.name)}</option>
         ));
 
-        const data = map(tripwireEventList, (tripwireEvent) => {
+        const shownTripwireEventList = slice(tripwireEventList, 0, numShownEvents);
+        const data = map(shownTripwireEventList, (tripwireEvent) => {
             const previewStyle = {
                 background: `url(/shared/${tripwireEvent.content.thumbnail_name}) center / cover`
             };
@@ -205,6 +222,18 @@ export default class DashboardPage extends Component {
                         </DataTable>
                     );
                 })()}
+                {
+                    numShownEvents < tripwireEventList.length &&
+                    <div className = 'DashboardPage__events__more__wrapper'>
+                        <img
+                            className = 'DashboardPage__events__more'
+                            src = '/static/images/load-more-btn.svg'
+                            width = '40'
+                            height = '40'
+                            onClick = {this.handleMoreBtnClick}
+                        />
+                    </div>
+                }
             </div>
         );
     }
