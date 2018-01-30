@@ -3,6 +3,9 @@ import SelectField                        from 'react-material-select';
 import DatePicker                         from 'react-datepicker';
 import { DataTable, TableHeader, Button, Grid, Cell } from 'react-mdl';
 
+import fetch from 'isomorphic-fetch';
+import fileSaver from 'file-saver';
+import JSZip from 'jszip';
 import moment from 'moment';
 import concat from 'lodash/concat';
 import filter from 'lodash/filter';
@@ -42,7 +45,7 @@ export default class DashboardPage extends Component {
         searchCamera: ALL_CAMERAS._id,
         startDate: moment().subtract(3, 'days'),
         endDate: moment(),
-        videoUrl: '',
+        previewEvent: null,
         numShownEvents: MIN_NUM_SHOWN_EVENTS
     };
 
@@ -93,15 +96,59 @@ export default class DashboardPage extends Component {
         this.props.searchEvents({ query });
     }
 
-    handlePreviewClicked = (videoUrl) => {
+    handlePreviewClicked = (previewEvent) => {
         this.setState({
-            videoUrl
+            previewEvent
         });
     }
 
     handleVideoDialogClose = () => {
         this.setState({
-            videoUrl: ''
+            previewEvent: null
+        });
+    }
+
+    handleDownloadBtnClick = (videoUrl, metadataUrl) => {
+        const videoFileName = videoUrl.replace(/^.*[\\\/]/, '');
+        const metadataFileName = metadataUrl.replace(/^.*[\\\/]/, '');
+        const zipFileName = metadataFileName.replace('.json', '.zip');
+        const zip = new JSZip();
+
+        fetch(videoUrl, {
+            headers: {
+                Accept: 'video/mp4'
+            }
+        }).then((res) => {
+            if (res.status >= 400) {
+                throw new Error(res);
+            }
+
+            return res.arrayBuffer();
+        }).then((videoFile) => {
+            zip.file(videoFileName, videoFile);
+
+            return fetch(metadataUrl, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            });
+        }).then((res) => {
+            if (res.status >= 400) {
+                throw new Error(res);
+            }
+
+            return res.arrayBuffer();
+        }).then((metadataFile) => {
+            zip.file(metadataFileName, metadataFile);
+
+            return zip.generateAsync({
+                type: 'blob'
+            });
+        }).then((zipFile) => {
+            fileSaver.saveAs(zipFile, zipFileName);
+        }).catch((error) => {
+            // TODO: Error handling.
+            console.error(error);
         });
     }
 
@@ -138,7 +185,7 @@ export default class DashboardPage extends Component {
                 <div
                     className = 'DashboardPage__events__preview'
                     style     = {previewStyle}
-                    onClick   = {this.handlePreviewClicked.bind(this, `/shared/${tripwireEvent.content.video_name}`)}
+                    onClick   = {this.handlePreviewClicked.bind(this, tripwireEvent)}
                 />
             );
             const time = readableTime(tripwireEvent.timestamp, false);
@@ -255,6 +302,8 @@ export default class DashboardPage extends Component {
     }
 
     render() {
+        const { l } = this.context.i18n;
+
         const {
             isLoading,
             eventList,
@@ -265,24 +314,42 @@ export default class DashboardPage extends Component {
             type: 'tripwire_alert'
         });
 
-        const { videoUrl } = this.state;
+        const { previewEvent } = this.state;
 
         return (
             <div className = 'DashboardPage'>
                 <Loading show = {isLoading} />
 
-                <Dialog
-                    isOpen = {videoUrl !== ''}
-                    onRequestClose = {this.handleVideoDialogClose}
-                >
-                    <video
-                        className = 'DashboardPage__dialog__video'
-                        src = {videoUrl}
-                        controls
-                        autoPlay
-                        loop
-                    />
-                </Dialog>
+                {(() => {
+                    if (!previewEvent) {
+                        return null;
+                    }
+
+                    const videoUrl = `/shared/${previewEvent.content.video_name}`;
+                    const metadataUrl = `/shared/${previewEvent.content.metadata_name}`;
+
+                    return (
+                        <Dialog
+                            isOpen = {previewEvent !== null}
+                            onRequestClose = {this.handleVideoDialogClose}
+                        >
+                            <video
+                                className = 'DashboardPage__dialog__video'
+                                src = {videoUrl}
+                                controls
+                                autoPlay
+                                loop
+                            />
+                            <Button
+                                raised
+                                colored
+                                onClick = {this.handleDownloadBtnClick.bind(this, videoUrl, metadataUrl)}
+                            >
+                                {l('Download')}
+                            </Button>
+                        </Dialog>
+                    );
+                })()}
 
                 {(() => {
                     return this.renderTripwireEvents(tripwireEventList, cameraList);
