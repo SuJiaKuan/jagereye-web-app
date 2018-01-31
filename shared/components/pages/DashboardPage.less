@@ -35,9 +35,17 @@
     }
 }
 
-.DashboardPage__dialog__video {
-    max-width: 758px;
-    margin: 10px 0;
+.DashboardPage__dialog__video__wrapper {
+    position: relative;
+    overflow: hidden;
+
+    .DashboardPage__dialog__video {
+        max-width: 758px;
+    }
+
+    .DashboardPage__dialog__video__tripwire {
+        position: absolute;
+    }
 }
 
 .DashboardPage__search__date {

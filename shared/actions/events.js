@@ -2,6 +2,7 @@ import merge from 'lodash/merge';
 import moment from 'moment';
 
 import api from '../apiSingleton';
+import ApiClient from '../api/ApiClient';
 import { raiseError } from './errors';
 
 export const SEARCH_EVENTS_REQUEST = 'SEARCH_EVENTS_REQUEST';
@@ -34,5 +35,45 @@ export function searchEvents({ query = {} }) {
             });
             dispatch(raiseError(error));
         });
+    };
+}
+
+export const LOAD_EVENT_METADATA_REQUEST = 'LOAD_EVENT_METADATA_REQUEST';
+export const LOAD_EVENT_METADATA_SUCCESS = 'LOAD_EVENT_METADATA_SUCCESS';
+export const LOAD_EVENT_METADATA_FAIL = 'LOAD_EVENT_METADATA_FAIL';
+export const CHANGE_PREVIEW_EVENT = 'CHANGE_PREVIEW_EVENT';
+
+export function changePreviewEvent(previewEvent) {
+    return dispatch => {
+        if (!previewEvent) {
+            dispatch({
+                type: CHANGE_PREVIEW_EVENT,
+                previewEvent: null,
+                eventMetadata: null
+            });
+        } else {
+            const apiClient = new ApiClient({ prefix: '' });
+            const metadataUrl = `shared/${previewEvent.content.metadata_name}`;
+
+            dispatch({
+                type: LOAD_EVENT_METADATA_REQUEST
+            });
+
+            apiClient.get(metadataUrl).then((eventMetadata) => {
+                dispatch({
+                    type: LOAD_EVENT_METADATA_SUCCESS
+                });
+                dispatch({
+                    type: CHANGE_PREVIEW_EVENT,
+                    previewEvent,
+                    previewEventMetadata: eventMetadata
+                });
+            }).catch((error) => {
+                dispatch({
+                    type : LOAD_EVENT_METADATA_FAIL
+                });
+                dispatch(raiseError(error));
+            });
+        }
     };
 }

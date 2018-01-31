@@ -2,7 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { connect }                     from 'react-redux';
 
 import { loadCameras } from '../../actions/cameras';
-import { searchEvents } from '../../actions/events';
+import {
+    searchEvents,
+    changePreviewEvent
+} from '../../actions/events';
 import connectDataFetchers from '../../lib/connectDataFetchers.jsx';
 
 import DashboardPage from '../../components/pages/DashboardPage.jsx';
@@ -12,6 +15,8 @@ class DashboardPageContainer extends Component {
         isLoading: PropTypes.bool,
         eventList: PropTypes.arrayOf(PropTypes.object),
         cameraList: PropTypes.arrayOf(PropTypes.object),
+        previewEvent: PropTypes.object,
+        previewEventMetadata: PropTypes.object,
         dispatch: PropTypes.func
     };
 
@@ -19,11 +24,16 @@ class DashboardPageContainer extends Component {
         this.props.dispatch(searchEvents({ query }));
     }
 
+    changePreviewEvent = (previewEvent) => {
+        this.props.dispatch(changePreviewEvent(previewEvent));
+    }
+
     render() {
         return (
             <DashboardPage
                 {...this.props}
                 searchEvents = {this.searchEvents}
+                changePreviewEvent = {this.changePreviewEvent}
             />
         );
     }
@@ -32,7 +42,9 @@ class DashboardPageContainer extends Component {
 function mapStateToProps({ events, cameras }) {
     const {
         isLoading: isSearchingEvents,
-        eventList
+        eventList,
+        previewEvent,
+        previewEventMetadata
     } = events;
     const {
         isLoading: isLoadingCameras,
@@ -42,7 +54,9 @@ function mapStateToProps({ events, cameras }) {
     return {
         isLoading: isSearchingEvents || isLoadingCameras,
         eventList,
-        cameraList
+        cameraList,
+        previewEvent,
+        previewEventMetadata
     };
 }
 export default connect(mapStateToProps)(

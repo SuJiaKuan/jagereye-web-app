@@ -31,12 +31,18 @@ const ALL_CAMERAS = {
 const MIN_NUM_SHOWN_EVENTS = 5;
 const MORE_SHOWN_EVENTS_STEP = 5;
 
+const TRIPWIRE_NORMAL_COLOR = 'rgba(59, 137, 226, 0.5)';
+const TRIPWIRE_ALERT_COLOR = 'rgba(244, 194, 66, 0.5)';
+
 export default class DashboardPage extends Component {
     static propTypes = {
         isLoading: PropTypes.bool,
         eventList: PropTypes.arrayOf(PropTypes.object),
         cameraList: PropTypes.arrayOf(PropTypes.object),
-        searchEvents: PropTypes.func
+        previewEvent: PropTypes.object,
+        previewEventMetadata: PropTypes.object,
+        searchEvents: PropTypes.func,
+        changePreviewEvent: PropTypes.func
     };
 
     static contextTypes = { i18n: React.PropTypes.object };
@@ -45,8 +51,9 @@ export default class DashboardPage extends Component {
         searchCamera: ALL_CAMERAS._id,
         startDate: moment().subtract(3, 'days'),
         endDate: moment(),
-        previewEvent: null,
-        numShownEvents: MIN_NUM_SHOWN_EVENTS
+        numShownEvents: MIN_NUM_SHOWN_EVENTS,
+        tripwireColor: TRIPWIRE_NORMAL_COLOR,
+        videoRatio: 0
     };
 
     handleSearchCameraChange = (selected) => {
@@ -97,14 +104,32 @@ export default class DashboardPage extends Component {
     }
 
     handlePreviewClicked = (previewEvent) => {
-        this.setState({
-            previewEvent
-        });
+        this.props.changePreviewEvent(previewEvent);
     }
 
     handleVideoDialogClose = () => {
+        this.props.changePreviewEvent(null);
         this.setState({
-            previewEvent: null
+            tripwireColor: TRIPWIRE_NORMAL_COLOR,
+            videoRatio: 0
+        });
+    }
+
+    handleVideoLoadedMetadata = () => {
+        this.setState({
+            videoRatio: this.video.clientWidth / this.video.videoWidth
+        });
+    }
+
+    handleVideoTimeUpdate = () => {
+        const { frames } = this.props.previewEventMetadata;
+        const index =
+            parseInt((this.video.currentTime / this.video.duration) * frames.length, 10);
+        const { mode } = frames[index];
+        const tripwireColor = mode > 0 ? TRIPWIRE_ALERT_COLOR : TRIPWIRE_NORMAL_COLOR;
+
+        this.setState({
+            tripwireColor
         });
     }
 
@@ -307,14 +332,19 @@ export default class DashboardPage extends Component {
         const {
             isLoading,
             eventList,
-            cameraList
+            cameraList,
+            previewEvent,
+            previewEventMetadata
         } = this.props;
+
+        const {
+            tripwireColor,
+            videoRatio
+        } = this.state;
 
         const tripwireEventList = filter(eventList, {
             type: 'tripwire_alert'
         });
-
-        const { previewEvent } = this.state;
 
         return (
             <div className = 'DashboardPage'>
@@ -328,18 +358,48 @@ export default class DashboardPage extends Component {
                     const videoUrl = `/shared/${previewEvent.content.video_name}`;
                     const metadataUrl = `/shared/${previewEvent.content.metadata_name}`;
 
+                    const { region } = previewEventMetadata.custom;
+
+                    const relativeRegion = [ {
+                        x: parseInt(region[0] * videoRatio, 10),
+                        y: parseInt(region[1] * videoRatio, 10)
+                    }, {
+                        x: parseInt(region[2] * videoRatio, 10),
+                        y: parseInt(region[3] * videoRatio, 10)
+                    } ];
+                    const regionWidth = relativeRegion[1].x - relativeRegion[0].x;
+                    const regionHeight = relativeRegion[1].y - relativeRegion[0].y;
+
+                    const tripwireStyle = {
+                        left: `${relativeRegion[0].x}px`,
+                        top: `${relativeRegion[0].y}px`,
+                        width: `${regionWidth}px`,
+                        height: `${regionHeight}px`,
+                        backgroundColor: tripwireColor
+                    };
+
                     return (
                         <Dialog
                             isOpen = {previewEvent !== null}
                             onRequestClose = {this.handleVideoDialogClose}
                         >
-                            <video
-                                className = 'DashboardPage__dialog__video'
-                                src = {videoUrl}
-                                controls
-                                autoPlay
-                                loop
-                            />
+                            <div className = 'DashboardPage__dialog__video__wrapper'>
+                                <video
+                                    ref = {video => this.video = video}
+                                    className = 'DashboardPage__dialog__video'
+                                    src = {videoUrl}
+                                    controls
+                                    autoPlay
+                                    loop
+                                    onLoadedMetadata = {this.handleVideoLoadedMetadata}
+                                    onTimeUpdate = {this.handleVideoTimeUpdate}
+                                />
+                                <div
+                                    className = 'DashboardPage__dialog__video__tripwire'
+                                    style = {tripwireStyle}
+                                />
+                            </div>
+                            <p />
                             <Button
                                 raised
                                 colored
