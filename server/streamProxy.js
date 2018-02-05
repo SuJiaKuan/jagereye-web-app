@@ -1,3 +1,4 @@
+const httpError = require('http-errors')
 const killPort = require('kill-port');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
@@ -43,6 +44,28 @@ function renderFFServerConfig(stream, port) {
     `);
 }
 
+function sendError(res, status, message, origErrObj) {
+    const error = new Error();
+
+    error.status = status
+
+    if (message) {
+        error.message = message;
+    } else {
+        error.message = httpError(status).message;
+    }
+
+    if (origErrObj) {
+        if (origErrObj.kind === 'ObjectId') {
+            error.status = 400;
+            error.message = 'Invalid ObjectId format';
+        }
+        error.stack = origErrObj.stack;
+    }
+
+    return res.status(status).send(error);
+}
+
 export default function streamProxy(prefix, port) {
     const streamUrl = `${prefix}:${port}/stream.mjpg`;
 
@@ -51,20 +74,36 @@ export default function streamProxy(prefix, port) {
 
         if (ffserver && !ffserver.killed) {
             ffserver.stdout.destroy();
+            ffserver.stderr.destroy();
             ffserver.kill();
         }
 
         ffprobe(url)
         .then(metadata => {
-            const stream = find(metadata.streams, (stream) => (
+            let width;
+            let height;
+            let stream;
+
+            stream = find(metadata.streams, (stream) => (
                 stream.width > 0 && stream.height > 0
             ));
 
-            if (!stream) {
-                throw Error(`Can not get video size for ${url}`);
+            if (stream) {
+                width = stream.coded_width;
+                height = stream.coded_height;
+            } else {
+                stream = find(metadata.streams, (stream) => (
+                    stream.coded_width > 0 && stream.coded_height > 0
+                ));
+
+                if (!stream) {
+                    return sendError(res, 500, `Can not get video size for ${url}`);
+                }
+
+                width = stream.coded_width;
+                height = stream.coded_height;
             }
 
-            const { width, height } = stream;
             const ffserverConfig = renderFFServerConfig({
                 url,
                 width,
@@ -77,6 +116,8 @@ export default function streamProxy(prefix, port) {
             ffserver = spawn('ffserver', ['-f', FFSERVER_CONFIG_NAME]);
 
             ffserver.stdout.on('data', (data) => {
+                console.log(data.toString());
+
                 // Send response when ffserver is ready.
                 if (includes(data.toString(), '[GET] "/feed1.ffm')) {
                     ffserver.stdout.destroy();
@@ -92,10 +133,21 @@ export default function streamProxy(prefix, port) {
                 }
             });
 
+            ffserver.stderr.on('data', (data) => {
+                console.error(data.toString());
+            });
+
         })
         .catch(err => {
             console.error(err.stack);
-            res.end(err.message);
+
+            if (includes(err.stack, 'method DESCRIBE failed: 404 Not Found')) {
+                return sendError(res, 404, `URL: ${url} not found`, err);
+            } else if (includes(err.stack, 'Failed to resolve hostname')) {
+                return sendError(res, 404, `Failed to resolve ${url}`, err);
+            } else {
+                return sendError(res, 500, err.message, err);
+            }
         });
     }
 }

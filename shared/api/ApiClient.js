@@ -70,18 +70,21 @@ export default class ApiClient {
         }
 
         return fetch(`${this.prefix}/${urlWithQuery}`, init).then(res => {
-            if (res.status >= 400) {
-                throw new Error('Bad response from server');
-            }
-
             return res.json();
         }).then(data => {
-            // TODO(JiaKuan Su): More error handling.)
-            if (data) {
-                return data;
+            if (!data) {
+                return Promise.reject(new Error('Empty response'));
             }
 
-            return Promise.reject(data.error);
+            if (data.status >= 400) {
+                const error = new Error(data.message);
+
+                error.status = data.status;
+
+                return Promise.reject(error);
+            }
+
+            return data;
         });
     }
 
