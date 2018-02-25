@@ -1,11 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Checkbox, Textfield, Grid, Cell } from 'react-mdl';
-import clone from 'lodash/clone';
-import includes from 'lodash/includes';
-import fill from 'lodash/fill';
-import filter from 'lodash/filter';
-import isEqual from 'lodash/isEqual';
-import map from 'lodash/map';
+import { Textfield } from 'react-mdl';
 
 import Button from 'react-mdl/lib/Button';
 
@@ -15,12 +9,6 @@ const FORM_STEP = {
     NEW: 'NEW',
     CONFIG: 'CONFIG'
 };
-
-const TRIGGERS = [
-    'person',
-    'dog',
-    'car'
-];
 
 export default class AddCamera extends Component {
     static propTypes = {
@@ -34,16 +22,7 @@ export default class AddCamera extends Component {
     state = {
         name: '',
         url: '',
-        region: [ {
-            x: 0,
-            y: 0
-        }, {
-            x: 0,
-            y: 0
-        } ],
-        triggersChecked: fill(new Array(TRIGGERS.length), false),
-        step: FORM_STEP.NEW,
-        isDrawing: false
+        step: FORM_STEP.NEW
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -68,12 +47,6 @@ export default class AddCamera extends Component {
             this.canvasImg = new Image();
             this.canvasImg.onload = () => {
                 this.canvasTimer = setInterval(() => {
-                    const region = this.reoderRegion(this.state.region);
-                    const x = region[0].x;
-                    const y = region[0].y;
-                    const width = region[1].x - x;
-                    const height = region[1].y - y;
-
                     ctx.drawImage(
                         this.canvasImg,
                         0,
@@ -81,10 +54,6 @@ export default class AddCamera extends Component {
                         this.canvas.width,
                         this.canvas.height
                     );
-                    ctx.fillStyle = '#375494';
-                    ctx.globalAlpha = 0.5;
-                    ctx.fillRect(x, y, width, height);
-                    ctx.globalAlpha = 1;
                 }, 50);
             };
             this.canvasImg.src = `${curStreamView.url}?${new Date().getTime()}`;
@@ -95,33 +64,6 @@ export default class AddCamera extends Component {
 
     componentWillUnmount() {
         clearInterval(this.canvasTimer);
-    }
-
-    handleCanvasMouseDown = (e) => {
-        const position = this.getMousePosition(this.canvas, e);
-
-        this.setState({
-            region: [position, position],
-            isDrawing: true
-        });
-    }
-
-    handleCanvasMouseMove = (e) => {
-        const { isDrawing, region } = this.state;
-
-        if (isDrawing) {
-            const position = this.getMousePosition(this.canvas, e);
-
-            this.setState({
-                region: [region[0], position]
-            });
-        }
-    }
-
-    handleCanvasMouseUp = () => {
-        this.setState({
-            isDrawing: false
-        });
     }
 
     handleNameChange = (e) => {
@@ -155,65 +97,12 @@ export default class AddCamera extends Component {
     handleFinishBtnClick = (e) => {
         e.preventDefault();
 
-        const { name, url, region, triggersChecked } = this.state;
-        const triggers = filter(TRIGGERS, (trigger, idx) => (
-            triggersChecked[idx]
-        ));
-        const reoderedRegion = this.reoderRegion(region);
-        const ratioX = this.canvasImg.width / this.canvas.width;
-        const ratioY = this.canvasImg.height / this.canvas.height;
-        const scaledRegion = [ {
-            x: Math.round(reoderedRegion[0].x * ratioX),
-            y: Math.round(reoderedRegion[0].y * ratioY)
-        }, {
-            x: Math.round(reoderedRegion[1].x * ratioX),
-            y: Math.round(reoderedRegion[1].y * ratioY)
-        } ];
+        const { name, url } = this.state;
 
         this.props.addNewCamera({
             name,
-            url,
-            region: scaledRegion,
-            triggers
+            url
         });
-    }
-
-    handleTriggersChange = (idx) => {
-        const newTriggersChecked = clone(this.state.triggersChecked);
-
-        newTriggersChecked[idx] = !newTriggersChecked[idx];
-        this.setState({
-            triggersChecked: newTriggersChecked
-        });
-    }
-
-    getMousePosition(obj, e) {
-        let elX = 0;
-        let elY = 0;
-        let _obj = obj;
-
-        if (_obj.offsetParent) {
-            do {
-                elX += _obj.offsetLeft;
-                elY += _obj.offsetTop;
-                _obj = _obj.offsetParent;
-            } while (_obj);
-        }
-
-        return {
-            x: e.pageX - elX,
-            y: e.pageY - elY
-        };
-    }
-
-    reoderRegion(region) {
-        return [ {
-            x: Math.min(region[0].x, region[1].x),
-            y: Math.min(region[0].y, region[1].y)
-        }, {
-            x: Math.max(region[0].x, region[1].x),
-            y: Math.max(region[0].y, region[1].y)
-        } ];
     }
 
     renderForm = () => {
@@ -223,10 +112,7 @@ export default class AddCamera extends Component {
         const {
             name,
             url,
-            region,
-            triggersChecked,
-            step,
-            isDrawing
+            step
         } = this.state;
 
         if (step === FORM_STEP.NEW) {
@@ -258,28 +144,7 @@ export default class AddCamera extends Component {
                 </form>
             );
         } else if (step === FORM_STEP.CONFIG) {
-            const triggerCheckBoxes = map(TRIGGERS, (trigger, idx) => (
-                <Cell
-                    key = {trigger}
-                    col = {4}
-                >
-                    <Checkbox
-                        label    = {l(trigger)}
-                        checked  = {triggersChecked[idx]}
-                        onChange = {this.handleTriggersChange.bind(this, idx)}
-                    />
-                </Cell>
-            ));
-            const finishBtnDisabled =
-                !streamView.isAvailable ||
-                !includes(triggersChecked, true) ||
-                isEqual(region, [ {
-                    x: 0,
-                    y: 0
-                }, {
-                    x: 0,
-                    y: 0
-                } ]);
+            const finishBtnDisabled = !streamView.isAvailable;
 
             return (
                 <form>
@@ -299,17 +164,9 @@ export default class AddCamera extends Component {
                                 ref         = {canvas => this.canvas = canvas}
                                 width       = '700'
                                 height      = '394'
-                                style       = {{ cursor: isDrawing ? 'nwse-resize' : 'crosshair' }}
-                                onMouseDown = {this.handleCanvasMouseDown}
-                                onMouseMove = {this.handleCanvasMouseMove}
-                                onMouseUp   = {this.handleCanvasMouseUp}
                             />
                         );
                     })()}
-                    <br />
-                    <Grid>
-                        {triggerCheckBoxes}
-                    </Grid>
                     <br />
                     <Button
                         colored

@@ -1,9 +1,12 @@
 import querystring  from 'querystring';
 
+import path from 'path';
+
 import express      from 'express';
 import cookieParser from 'cookie-parser';
 import serializeJs  from 'serialize-javascript';
 import bodyParser   from 'body-parser';
+import Gallery from './node-gallery/lib/gallery.js';
 
 import React                     from 'react';
 import ReactDOM                  from 'react-dom/server';
@@ -47,6 +50,12 @@ const app = express();
 
 app.use('/static', express.static('public/static'));
 app.use('/shared', express.static(`${process.env.HOME}/jagereye_shared`));
+app.use('/faces', express.static(`${process.env.HOME}/jagereye_shared/face_detection`));
+app.use('/faces', Gallery({
+    staticFiles: path.relative(process.cwd(), `${process.env.HOME}/jagereye_shared/face_detection`),
+    urlRoot: 'faces',
+    title: 'Detected Faces'
+}));
 app.use(cookieParser());
 
 app.use(bodyParser.json());
@@ -84,7 +93,7 @@ app.use((req, res) => {
 
     match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
         if (req.url === '/') {
-            return res.redirect(302, '/dashboard');
+            return res.redirect(302, '/cameras');
         }
         if (redirectLocation) {
             return res.redirect(301, redirectLocation.pathname + redirectLocation.search);

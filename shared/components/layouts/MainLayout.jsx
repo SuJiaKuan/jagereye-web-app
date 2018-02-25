@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Header, Navigation }          from 'react-mdl';
 import { Link }                        from 'react-router';
 
-import Notifcations from '../../containers/Notifications.jsx';
 import ErrorDialog from '../../containers/ErrorDialog.jsx';
 import Footer       from '../../containers/Footer.jsx';
 
@@ -32,9 +31,13 @@ export default class MainLayout extends Component {
 
                 <Header title={title}>
                     <Navigation>
-                        <Link to = '/dashboard'>{l('Dashboard')}</Link>
                         <Link to = '/cameras'>{l('Cameras')}</Link>
-                        <Notifcations />
+                        <a
+                            href = '/faces'
+                            target = '_blank'
+                        >
+                            {l('Faces')}
+                        </a>
                     </Navigation>
                 </Header>
                 <div className = 'MainLayout__content'>

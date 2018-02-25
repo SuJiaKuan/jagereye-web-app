@@ -42,7 +42,7 @@ export function addCamera({ params = {} }) {
         let camera = {
             name: params.name,
             // TODO(JiaKuan Su): Customize type.
-            type: 'tripwire',
+            type: 'face_detection',
             enabled: true,
             source: {
                 mode: 'stream',
@@ -50,11 +50,8 @@ export function addCamera({ params = {} }) {
             },
             // TODO(JiaKuan Su): Customize pipelines.
             pipelines: [ {
-                name: 'tripwire',
-                params: {
-                    region: params.region,
-                    triggers: params.triggers
-                }
+                name: 'face_detection',
+                params: {}
             } ]
         };
 
