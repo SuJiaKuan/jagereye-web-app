@@ -53,7 +53,7 @@ export function changePreviewEvent(previewEvent) {
             });
         } else {
             const apiClient = new ApiClient({ prefix: '' });
-            const metadataUrl = `jager-store/${previewEvent.content.metadata_name}`;
+            const metadataUrl = `jager-store/${previewEvent.content.metadata}`;
 
             dispatch({
                 type: LOAD_EVENT_METADATA_REQUEST

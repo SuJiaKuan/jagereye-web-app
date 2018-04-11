@@ -68,7 +68,7 @@ export default class CamerasPage extends Component {
             const camera = find(cameraList, (o) => o._id === analyzerId);
             const cameraName = camera ? camera.name : l('Unknown');
             const previewStyle = {
-                background: `url(/jager-store/${content.thumbnail_name}) center / cover`
+                background: `url(/jager-store/${content.thumbnail}) center / cover`
             };
             const itemClass = cx('Notifcations__item', {
                 'Notifcations__item__read': read
