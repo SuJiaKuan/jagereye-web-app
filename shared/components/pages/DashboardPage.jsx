@@ -204,7 +204,7 @@ export default class DashboardPage extends Component {
         const shownTripwireEventList = slice(tripwireEventList, 0, numShownEvents);
         const data = map(shownTripwireEventList, (tripwireEvent) => {
             const previewStyle = {
-                background: `url(/shared/${tripwireEvent.content.thumbnail_name}) center / cover`
+                background: `url(/jager-store/${tripwireEvent.content.thumbnail_name}) center / cover`
             };
             const preview = (
                 <div
@@ -355,8 +355,8 @@ export default class DashboardPage extends Component {
                         return null;
                     }
 
-                    const videoUrl = `/shared/${previewEvent.content.video_name}`;
-                    const metadataUrl = `/shared/${previewEvent.content.metadata_name}`;
+                    const videoUrl = `/jager-store/${previewEvent.content.video_name}`;
+                    const metadataUrl = `/jager-store/${previewEvent.content.metadata_name}`;
 
                     const { region } = previewEventMetadata.custom;
 
