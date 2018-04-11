@@ -41,18 +41,16 @@ export function addCamera({ params = {} }) {
 
         let camera = {
             name: params.name,
-            // TODO(JiaKuan Su): Customize type.
-            type: 'tripwire',
-            enabled: true,
             source: {
                 mode: 'stream',
                 url: params.url
             },
             // TODO(JiaKuan Su): Customize pipelines.
             pipelines: [ {
-                name: 'tripwire',
+                // TODO(JiaKuan Su): Customize type.
+                type: 'IntrusionDetection',
                 params: {
-                    region: params.region,
+                    roi: params.region,
                     triggers: params.triggers
                 }
             } ]

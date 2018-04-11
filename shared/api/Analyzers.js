@@ -21,15 +21,11 @@ export default class AnalyzersAPI extends Base {
         return this.apiClient.delete(`analyzer/${id}`, {}, {});
     }
 
-    showStatus(id) {
-        return this.apiClient.get(`analyzer/${id}/runtime`, {}, {});
-    }
-
     start(id) {
-        return this.apiClient.post(`analyzer/${id}/runtime`, {}, {});
+        return this.apiClient.post(`analyzer/${id}/start`, {}, {});
     }
 
     stop(id) {
-        return this.apiClient.delete(`analyzer/${id}/runtime`, {}, {});
+        return this.apiClient.delete(`analyzer/${id}/stop`, {}, {});
     }
 }
