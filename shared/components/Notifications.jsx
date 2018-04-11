@@ -60,13 +60,11 @@ export default class CamerasPage extends Component {
         const menuItems = map(notificationList, (notification, idx) => {
             const {
                 _id,
-                analyzerId,
                 timestamp,
                 content,
                 read
             } = notification;
-            const camera = find(cameraList, (o) => o._id === analyzerId);
-            const cameraName = camera ? camera.name : l('Unknown');
+            const cameraName = content.name;
             const previewStyle = {
                 background: `url(/jager-store/${content.thumbnail}) center / cover`
             };
