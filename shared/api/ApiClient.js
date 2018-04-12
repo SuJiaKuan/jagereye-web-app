@@ -70,6 +70,10 @@ export default class ApiClient {
         }
 
         return fetch(`${this.prefix}/${urlWithQuery}`, init).then(res => {
+            if (res.status === 204) {
+                return {};
+            }
+
             return res.json();
         }).then(data => {
             if (!data) {

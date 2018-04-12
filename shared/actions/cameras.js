@@ -42,7 +42,7 @@ export function addCamera({ params = {} }) {
         let camera = {
             name: params.name,
             source: {
-                mode: 'stream',
+                mode: 'streaming',
                 url: params.url
             },
             // TODO(JiaKuan Su): Customize pipelines.
@@ -56,10 +56,10 @@ export function addCamera({ params = {} }) {
             } ]
         };
 
-        return api.analyzers.create(camera).then(({ id }) => {
-            camera = merge({}, { _id: id }, camera);
+        return api.analyzers.create(camera).then(({ _id }) => {
+            camera = merge({}, { _id }, camera);
 
-            return api.analyzers.start(id);
+            return api.analyzers.start(_id);
         }).then(() => {
             dispatch({
                 type   : ADD_CAMERA_SUCCESS,
