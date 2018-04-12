@@ -4,7 +4,6 @@ import { IconButton } from 'react-mdl';
 import { Menu, MenuItem } from 'react-mdl-extra';
 import cx from 'classnames';
 import map from 'lodash/map';
-import find from 'lodash/find';
 
 import readableTime from '../lib/readableTime';
 
@@ -29,7 +28,6 @@ export default class CamerasPage extends Component {
         const { l } = this.context.i18n;
 
         const {
-            cameraList,
             notificationList,
             uncheckedCount,
             onBtnClick
@@ -66,7 +64,7 @@ export default class CamerasPage extends Component {
             } = notification;
             const cameraName = content.name;
             const previewStyle = {
-                background: `url(/jager-store/${content.thumbnail}) center / cover`
+                background: `url(/jager-store/${content.thumbnail || content.thumbnail_name}) center / cover`
             };
             const itemClass = cx('Notifcations__item', {
                 'Notifcations__item__read': read
