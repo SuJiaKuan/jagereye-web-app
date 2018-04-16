@@ -19,7 +19,7 @@ export function subscribeNotifications() {
         ws.onmessage = (event) => {
             dispatch({
                 type: NEW_NOTIFICATIONS,
-                notificationList: JSON.parse(event.data.replace(/'/g, '"'))
+                notificationList: [ JSON.parse(event.data.replace(/'/g, '"')) ]
             });
         };
     };
