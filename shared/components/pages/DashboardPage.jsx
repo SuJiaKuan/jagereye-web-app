@@ -344,7 +344,7 @@ export default class DashboardPage extends Component {
         } = this.state;
 
         const tripwireEventList = filter(eventList, {
-            type: 'intrusion_detection_alert'
+            type: 'intrusion_detection.alert'
         });
 
         return (
